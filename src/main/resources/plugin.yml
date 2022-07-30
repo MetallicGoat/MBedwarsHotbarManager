@@ -1,0 +1,7 @@
+version: 1.0-SNAPSHOT
+name: MBedwarsHotbarManager
+author: MetallicGoat
+main: me.metallicgoat.hotbarmanageraddon.HotbarManagerPlugin
+description: Adds a hotbar manager to MBedwars
+api-version: 1.13
+depend: [MBedwars]
