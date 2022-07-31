@@ -5,6 +5,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 public class ConfigValue {
@@ -21,7 +22,10 @@ public class ConfigValue {
     public static final List<String> reset_defaults_button_lore = Collections.singletonList("Reset settings to defaults");
     public static final Material reset_defaults_button_icon = Helper.get().getMaterialByName("BARRIER");
 
-    // TODO config to customize defaults
+    //TODO maybe load on start
+    public final HashMap<Integer, String> hotbar_defaults = new HashMap<Integer, String>(){{
+        put(1, "");
+    }};
     // TODO option to exclude categories (Maybe save allowed categories only)
 
     public static final ItemStack divider_material = Helper.get().parseItemStack("gray_stained_glass_pane");

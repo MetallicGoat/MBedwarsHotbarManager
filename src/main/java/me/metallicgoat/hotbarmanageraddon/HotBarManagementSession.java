@@ -26,7 +26,7 @@ public class HotBarManagementSession {
 
     private final Player player;
     private final boolean inShop;
-    private Integer selectedSlot = null;
+    private int selectedSlot = 0;
     private HashMap<Integer, String> categorySlotMap = new HashMap<>();
 
     // TODO make click pattern more intuitive
@@ -49,21 +49,21 @@ public class HotBarManagementSession {
             @Override
             public void onClick(Player player, boolean b, boolean b1) {
 
-                gui.closeAll();
+                player.closeInventory();
 
-                // TODO in-case we add button in shop
+                // TODO for when we add button in shop
                 if(inShop)
                     GameAPI.get().openShop(player);
 
             }
-        }), 0, 3);
+        }), 3, 0);
 
         gui.setItem(new GUIItem(new ItemStack(Material.BARRIER), new ClickListener() {
             @Override
             public void onClick(Player player, boolean b, boolean b1) {
                 // TODO
             }
-        }), 0, 5);
+        }), 5, 0);
 
 
         // Categories
@@ -80,15 +80,9 @@ public class HotBarManagementSession {
 
         gui.formatRow( 2, CenterFormat.CENTRALIZED);
 
-        // Divider
-        i = 0;
-        while(i < 9){
-            gui.setItem(ConfigValue.divider_material, i, 3);
-            i++;
-        }
+        Integer selectedSlotX = null;
 
         // Slots
-        i = 0;
         for(Map.Entry<Integer, String> entry : categorySlotMap.entrySet()){
             if(entry.getKey() == null || entry.getValue() == null)
                 continue;
@@ -101,18 +95,42 @@ public class HotBarManagementSession {
             gui.setItem(new GUIItem(icon, hotBarClickListener(entry.getKey())), entry.getKey(), 4);
         }
 
+        i = 0;
         while(i < 9){
 
             if(gui.getItem(i, 4) == null)
                 gui.setItem(new GUIItem(new ItemStack(Material.AIR), hotBarClickListener(i)), i, 4);
 
-            if(selectedSlot != null && selectedSlot == i)
-                gui.setItem(new GUIItem(ConfigValue.selected_slot_material, hotBarClickListener(i)), i, 4);
+            if(selectedSlot == i)
+                selectedSlotX = i;
 
             i++;
         }
 
+
+        // Top Divider
+        drawDivider(gui, selectedSlotX, 3);
+
+        // Bottom Divider
+        drawDivider(gui, selectedSlotX, 5);
+
         return gui;
+    }
+
+    private void drawDivider(ClickableGUI gui, Integer selectedSlotX, int y){
+        int i = 0;
+
+        while(i < 9){
+
+            if(selectedSlotX != null && selectedSlotX == i){
+                gui.setItem(ConfigValue.selected_slot_material, i, y, hotBarClickListener(i));
+                i++;
+                continue;
+            }
+
+            gui.setItem(ConfigValue.divider_material, i, y, hotBarClickListener(i));
+            i++;
+        }
     }
 
     private ItemStack getHotBarIcon(String shopPage){
@@ -130,15 +148,25 @@ public class HotBarManagementSession {
             @Override
             public void onClick(Player player, boolean leftClick, boolean shiftClick) {
 
-                if(selectedSlot == null)
+                if(!isChange(selectedSlot, pageName))
                     return;
 
                 categorySlotMap.put(selectedSlot, pageName);
                 saveHotBarData();
-                selectedSlot = null;
                 openGUI();
             }
         };
+    }
+
+    private boolean isChange(int selectedSlot, String pageName){
+
+        for(Map.Entry<Integer, String> entry : categorySlotMap.entrySet()){
+            if(entry.getKey() == selectedSlot && entry.getValue().equals(pageName)){
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private ClickListener hotBarClickListener(int slot){
@@ -148,24 +176,16 @@ public class HotBarManagementSession {
             public void onClick(Player player, boolean leftClick, boolean shiftClick) {
 
                 if(shiftClick){
-                    if(selectedSlot == null)
-                        return;
-
-                    categorySlotMap.remove(selectedSlot);
+                    categorySlotMap.remove(slot);
                     saveHotBarData();
-                    selectedSlot = null;
                     openGUI();
                     return;
                 }
 
-                if(!leftClick && selectedSlot != null && selectedSlot == slot){
-                    selectedSlot = null;
+                if(selectedSlot != slot){
+                    selectedSlot = slot;
                     openGUI();
-                    return;
                 }
-
-                selectedSlot = slot;
-                openGUI();
             }
         };
     }
