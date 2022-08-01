@@ -121,7 +121,7 @@ public class MainConfig {
                                 || page.getDisplayName().equalsIgnoreCase(split[1])
                                 || page.getIcon().getType().name().equalsIgnoreCase(split[1])) {
 
-                            defaults.put(slot, page);
+                            defaults.put(slot - 1, page);
                             break;
                         }
                     }
@@ -148,17 +148,16 @@ public class MainConfig {
         config.set("file-version", VERSION);
 
         config.addEmptyLine();
-        config.addEmptyLine();
 
         config.addComment("Hotbar Manager close button");
-        config.set("Close-Button.Icon", ConfigValue.close_button_icon);
+        config.set("Close-Button.Icon", ConfigValue.close_button_icon.name());
         config.set("Close-Button.Title", ConfigValue.close_button_title);
         config.set("Close-Button.Lore", ConfigValue.close_button_lore);
 
         config.addEmptyLine();
 
         config.addComment("Hotbar Manager reset defaults button");
-        config.set("Reset-Defaults-Button.Icon", ConfigValue.reset_defaults_button_icon);
+        config.set("Reset-Defaults-Button.Icon", ConfigValue.reset_defaults_button_icon.name());
         config.set("Reset-Defaults-Button.Title", ConfigValue.reset_defaults_button_title);
         config.set("Reset-Defaults-Button.Lore", ConfigValue.reset_defaults_button_lore);
 
@@ -177,16 +176,17 @@ public class MainConfig {
         config.addEmptyLine();
 
         config.addComment("The material used to separate the hotbar from the category selection buttons in the Hotbar Manager GUI");
-        config.set("Divider-Material", ConfigValue.divider_material);
+        config.set("Divider-Material", ConfigValue.divider_material.getType().name());
 
         config.addEmptyLine();
 
         config.addComment("The material used to highlight the selected slot in the Hotbar Manager GUI");
-        config.set("Selected-Slot-Material", ConfigValue.selected_slot_material);
+        config.set("Selected-Slot-Material", ConfigValue.selected_slot_material.getType().name());
 
         config.addEmptyLine();
 
         config.addComment("Set categories excluded from Hotbar Manager");
+        config.addComment("Add either category name OR category icon material name");
         {
             final List<String> excluded = new ArrayList<>();
 
@@ -200,11 +200,12 @@ public class MainConfig {
         config.addEmptyLine();
 
         config.addComment("Set the default Hotbar layout that is used");
+        config.addComment("Usage: <slot number>:<icon material type OR category name>");
         {
             final List<String> defaults = new ArrayList<>();
 
             for(Map.Entry<Integer, ShopPage> entry : ConfigValue.hotbar_defaults.entrySet())
-                defaults.add(entry.getKey() + ":" + entry.getValue().getIcon().getType().name());
+                defaults.add((entry.getKey() + 1) + ":" + entry.getValue().getIcon().getType().name());
 
             config.set("Default-Hotbar", defaults);
         }

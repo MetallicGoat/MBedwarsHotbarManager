@@ -3,6 +3,7 @@ package me.metallicgoat.hotbarmanageraddon;
 import de.marcely.bedwars.api.BedwarsAPI;
 import de.marcely.bedwars.api.BedwarsAddon;
 import de.marcely.bedwars.api.command.SubCommand;
+import me.metallicgoat.hotbarmanageraddon.config.LoadConfigs;
 import me.metallicgoat.hotbarmanageraddon.events.PlayerJoin;
 import me.metallicgoat.hotbarmanageraddon.events.ShopBuy;
 import org.bukkit.plugin.PluginManager;
@@ -28,6 +29,8 @@ public class HotbarManagerAddon extends BedwarsAddon {
 
         final HotbarManagerPlugin plugin = HotbarManagerPlugin.getInstance();
         final PluginManager manager = plugin.getServer().getPluginManager();
+
+        manager.registerEvents(new LoadConfigs(), plugin);
 
         manager.registerEvents(new PlayerJoin(), plugin);
         manager.registerEvents(new ShopBuy(), plugin);

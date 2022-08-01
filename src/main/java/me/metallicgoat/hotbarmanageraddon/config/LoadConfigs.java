@@ -5,7 +5,6 @@ import de.marcely.bedwars.api.GameAPI;
 import de.marcely.bedwars.api.event.ConfigsLoadEvent;
 import de.marcely.bedwars.api.game.shop.ShopItem;
 import de.marcely.bedwars.api.game.shop.ShopPage;
-import de.marcely.bedwars.api.game.shop.product.ShopProduct;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
@@ -47,11 +46,10 @@ public class LoadConfigs implements Listener {
 
         for(ShopPage page : GameAPI.get().getShopPages()){
             for(ShopItem item : page.getItems()){
-                for(ShopProduct product : item.getProducts()){
-                    if(product.isAutoWear()){
-                        return page;
-                    }
-                }
+                final String name = item.getIcon().getType().name();
+
+                if(name.contains("LEGGINGS") || name.contains("BOOTS") || name.contains("CHESTPLATE") || name.contains("HELMET"))
+                    return page;
             }
         }
 

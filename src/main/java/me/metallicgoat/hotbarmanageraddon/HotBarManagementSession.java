@@ -12,6 +12,7 @@ import de.marcely.bedwars.tools.gui.ClickableGUI;
 import de.marcely.bedwars.tools.gui.GUIItem;
 import de.marcely.bedwars.tools.gui.type.ChestGUI;
 import me.metallicgoat.hotbarmanageraddon.config.ConfigValue;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -59,7 +60,7 @@ public class HotBarManagementSession {
 
             final ItemStack guiIcon = Util.buildItemStack(
                     page.getIcon().getType(),
-                    Message.build(ConfigValue.categories_gui_title).placeholder("category-display-name", page.getDisplayName()).done(),
+                    Message.build(ConfigValue.categories_gui_title).placeholder("category-display-name", ChatColor.stripColor(page.getDisplayName())).done(),
                     ConfigValue.categories_gui_lore, 1);
 
             gui.setItem(new GUIItem(guiIcon, categoryClickListener(page.getName())), i, 2);
@@ -83,7 +84,7 @@ public class HotBarManagementSession {
 
             final ItemStack guiIcon = Util.buildItemStack(
                     page.getIcon().getType(),
-                    Message.build(ConfigValue.hotbar_gui_items_title).placeholder("category-display-name", page.getDisplayName()).done(),
+                    Message.build(ConfigValue.hotbar_gui_items_title).placeholder("category-display-name", ChatColor.stripColor(page.getDisplayName())).done(),
                     ConfigValue.hotbar_gui_items_lore, 1);
 
             gui.setItem(new GUIItem(guiIcon, hotBarClickListener(entry.getKey())), entry.getKey(), 4);
