@@ -1,9 +1,11 @@
 package me.metallicgoat.hotbarmanageraddon.config;
 
+import de.marcely.bedwars.api.game.shop.ShopPage;
 import de.marcely.bedwars.tools.Helper;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -12,24 +14,27 @@ public class ConfigValue {
 
     public static final String gui_title = "Hotbar Manager";
 
-    // TODO parse all these as one itemstack, this is dumb
-    public static final String close_button_title = "Close";
-    public static final List<String> close_button_lore = Collections.singletonList("Exit Menu");
-    public static final Material close_button_icon = Helper.get().getMaterialByName("ARROW");
+    public static String close_button_title = "Close";
+    public static List<String> close_button_lore = Collections.singletonList("Exit Menu");
+    public static Material close_button_icon = Helper.get().getMaterialByName("ARROW");
 
-    // TODO parse all these as one itemstack, this is dumb
-    public static final String reset_defaults_button_title = "Reset";
-    public static final List<String> reset_defaults_button_lore = Collections.singletonList("Reset settings to defaults");
-    public static final Material reset_defaults_button_icon = Helper.get().getMaterialByName("BARRIER");
+    public static String reset_defaults_button_title = "Reset";
+    public static List<String> reset_defaults_button_lore = Collections.singletonList("Reset settings to defaults");
+    public static Material reset_defaults_button_icon = Helper.get().getMaterialByName("BARRIER");
 
-    //TODO maybe load on start
-    public final HashMap<Integer, String> hotbar_defaults = new HashMap<Integer, String>(){{
-        put(1, "");
-    }};
-    // TODO option to exclude categories (Maybe save allowed categories only)
+    // NOTE: defaults loaded on start / reload
+    public static HashMap<Integer, ShopPage> hotbar_defaults = new HashMap<>();
+    public static List<ShopPage> excluded_categories = new ArrayList<>();
 
-    public static final ItemStack divider_material = Helper.get().parseItemStack("gray_stained_glass_pane");
-    public static final ItemStack selected_slot_material = Helper.get().parseItemStack("red_stained_glass_pane");
+    public static ItemStack divider_material = Helper.get().parseItemStack("gray_stained_glass_pane");
+    public static ItemStack selected_slot_material = Helper.get().parseItemStack("red_stained_glass_pane");
 
+    // TODO default Lore
+    public static String categories_gui_title = "{category-display-name}";
+    public static List<String> categories_gui_lore = new ArrayList<>();
+
+    // TODO default lore
+    public static String hotbar_gui_items_title = "{category-display-name}";
+    public static List<String> hotbar_gui_items_lore = new ArrayList<>();
 
 }

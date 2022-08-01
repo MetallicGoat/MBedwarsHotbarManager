@@ -6,7 +6,6 @@ import de.marcely.bedwars.api.GameAPI;
 import de.marcely.bedwars.api.game.shop.ShopPage;
 import de.marcely.bedwars.api.message.Message;
 import de.marcely.bedwars.api.player.PlayerDataAPI;
-import de.marcely.bedwars.tools.Helper;
 import de.marcely.bedwars.tools.gui.CenterFormat;
 import de.marcely.bedwars.tools.gui.ClickListener;
 import de.marcely.bedwars.tools.gui.ClickableGUI;
@@ -29,12 +28,13 @@ public class HotBarManagementSession {
     private int selectedSlot = 0;
     private HashMap<Integer, String> categorySlotMap = new HashMap<>();
 
-    // TODO make click pattern more intuitive
-
     public HotBarManagementSession(Player player, boolean inShop){
+
         this.player = player;
         this.inShop = inShop;
+
         loadHotBarData();
+        openGUI();
     }
 
     private void openGUI(){
@@ -45,26 +45,7 @@ public class HotBarManagementSession {
 
         final ClickableGUI gui = new ChestGUI(6, Message.build(ConfigValue.gui_title).done());
 
-        gui.setItem(new GUIItem(new ItemStack(Material.ARROW), new ClickListener() {
-            @Override
-            public void onClick(Player player, boolean b, boolean b1) {
-
-                player.closeInventory();
-
-                // TODO for when we add button in shop
-                if(inShop)
-                    GameAPI.get().openShop(player);
-
-            }
-        }), 3, 0);
-
-        gui.setItem(new GUIItem(new ItemStack(Material.BARRIER), new ClickListener() {
-            @Override
-            public void onClick(Player player, boolean b, boolean b1) {
-                // TODO
-            }
-        }), 5, 0);
-
+        addTopButtons(gui);
 
         // Categories
         final Collection<ShopPage> pages = GameAPI.get().getShopPages();
@@ -72,10 +53,18 @@ public class HotBarManagementSession {
         int i = 0;
 
         for(ShopPage page : pages){
-            if(page.getIcon().getType() != Material.IRON_CHESTPLATE) {
-                gui.setItem(new GUIItem(page.getIcon(), categoryClickListener(page.getName())), i, 2);
-                i++;
-            }
+
+            if(ConfigValue.excluded_categories.contains(page))
+                continue;
+
+            final ItemStack guiIcon = Util.buildItemStack(
+                    page.getIcon().getType(),
+                    Message.build(ConfigValue.categories_gui_title).placeholder("category-display-name", page.getDisplayName()).done(),
+                    ConfigValue.categories_gui_lore, 1);
+
+            gui.setItem(new GUIItem(guiIcon, categoryClickListener(page.getName())), i, 2);
+            i++;
+
         }
 
         gui.formatRow( 2, CenterFormat.CENTRALIZED);
@@ -87,12 +76,17 @@ public class HotBarManagementSession {
             if(entry.getKey() == null || entry.getValue() == null)
                 continue;
 
-            final ItemStack icon = getHotBarIcon(entry.getValue());
+            final ShopPage page = getPageByName(entry.getValue());
 
-            if(icon == null)
+            if(page == null)
                 continue;
 
-            gui.setItem(new GUIItem(icon, hotBarClickListener(entry.getKey())), entry.getKey(), 4);
+            final ItemStack guiIcon = Util.buildItemStack(
+                    page.getIcon().getType(),
+                    Message.build(ConfigValue.hotbar_gui_items_title).placeholder("category-display-name", page.getDisplayName()).done(),
+                    ConfigValue.hotbar_gui_items_lore, 1);
+
+            gui.setItem(new GUIItem(guiIcon, hotBarClickListener(entry.getKey())), entry.getKey(), 4);
         }
 
         i = 0;
@@ -117,9 +111,52 @@ public class HotBarManagementSession {
         return gui;
     }
 
-    private void drawDivider(ClickableGUI gui, Integer selectedSlotX, int y){
-        int i = 0;
+    private void addTopButtons(ClickableGUI gui){
 
+        final ItemStack closeItem = Util.buildItemStack(
+                ConfigValue.close_button_icon,
+                ConfigValue.close_button_title,
+                ConfigValue.close_button_lore,
+                1);
+
+        gui.setItem(new GUIItem(closeItem, new ClickListener() {
+            @Override
+            public void onClick(Player player, boolean b, boolean b1) {
+
+                player.closeInventory();
+
+                if(inShop)
+                    GameAPI.get().openShop(player);
+
+            }
+        }), 3, 0);
+
+        final ItemStack resetItem = Util.buildItemStack(
+                ConfigValue.reset_defaults_button_icon,
+                ConfigValue.reset_defaults_button_title,
+                ConfigValue.reset_defaults_button_lore,
+                1);
+
+        gui.setItem(new GUIItem(resetItem, new ClickListener() {
+            @Override
+            public void onClick(Player player, boolean b, boolean b1) {
+
+                final HashMap<Integer, String> newCategorySlotMap = new HashMap<>();
+
+                for(Map.Entry<Integer, ShopPage> entry : ConfigValue.hotbar_defaults.entrySet())
+                    newCategorySlotMap.put(entry.getKey(), entry.getValue().getName());
+
+                categorySlotMap = newCategorySlotMap;
+
+                saveHotBarData();
+                openGUI();
+            }
+        }), 5, 0);
+    }
+
+    private void drawDivider(ClickableGUI gui, Integer selectedSlotX, int y){
+
+        int i = 0;
         while(i < 9){
 
             if(selectedSlotX != null && selectedSlotX == i){
@@ -133,10 +170,11 @@ public class HotBarManagementSession {
         }
     }
 
-    private ItemStack getHotBarIcon(String shopPage){
+    private ShopPage getPageByName(String shopPage){
+
         for(ShopPage page : GameAPI.get().getShopPages()){
             if(shopPage.equals(page.getName()))
-                return page.getIcon();
+                return page;
         }
 
         return null;
@@ -148,7 +186,7 @@ public class HotBarManagementSession {
             @Override
             public void onClick(Player player, boolean leftClick, boolean shiftClick) {
 
-                if(!isChange(selectedSlot, pageName))
+                if(!hasBeenModified(selectedSlot, pageName))
                     return;
 
                 categorySlotMap.put(selectedSlot, pageName);
@@ -156,17 +194,6 @@ public class HotBarManagementSession {
                 openGUI();
             }
         };
-    }
-
-    private boolean isChange(int selectedSlot, String pageName){
-
-        for(Map.Entry<Integer, String> entry : categorySlotMap.entrySet()){
-            if(entry.getKey() == selectedSlot && entry.getValue().equals(pageName)){
-                return false;
-            }
-        }
-
-        return true;
     }
 
     private ClickListener hotBarClickListener(int slot){
@@ -190,6 +217,17 @@ public class HotBarManagementSession {
         };
     }
 
+    private boolean hasBeenModified(int selectedSlot, String pageName){
+
+        for(Map.Entry<Integer, String> entry : categorySlotMap.entrySet()){
+            if(entry.getKey() == selectedSlot && entry.getValue().equals(pageName)){
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     private void loadHotBarData(){
 
         PlayerDataAPI.get().getProperties(player.getUniqueId(), playerProperties -> {
@@ -202,8 +240,6 @@ public class HotBarManagementSession {
 
             final Gson gson = new Gson();
             categorySlotMap = gson.fromJson(json.get(), new TypeToken<HashMap<Integer, String>>(){}.getType());
-
-            openGUI();
         });
     }
 

@@ -1,4 +1,4 @@
-package me.metallicgoat.hotbarmanageraddon;
+package me.metallicgoat.hotbarmanageraddon.events;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-public class OnShopBuy implements Listener {
+public class ShopBuy implements Listener {
 
     // TODO Simplify this mess
     // TODO add support for shopItems with multiple products
@@ -45,6 +45,7 @@ public class OnShopBuy implements Listener {
         final Player player = event.getPlayer();
 
         // TODO check if category is enabled
+        // TODO make sure item is not wearable
 
         final ItemStack givenItem = getGivingItem(event.getItem(), player, event.getArena());
 
@@ -154,22 +155,18 @@ public class OnShopBuy implements Listener {
         // Try to find empty slot
         for (Map.Entry<Integer, String> entry : layout.entrySet()) {
 
-            System.out.println(1);
-
             if (!entry.getValue().equals(category))
                 continue;
 
-            System.out.println(2);
             final ItemStack currStack = inventory.getItem(entry.getKey());
 
-            if (currStack == null) {
-                System.out.println(3);
+            if (currStack == null)
                 return entry.getKey();
-            }
         }
 
         // Check if we can force move any items
         if(isHotbarFull(inventory)) {
+
             for (Map.Entry<Integer, String> entry : layout.entrySet()) {
 
                 if (!entry.getValue().equals(category))

@@ -1,6 +1,8 @@
 package me.metallicgoat.hotbarmanageraddon;
 
+import de.marcely.bedwars.api.BedwarsAPI;
 import lombok.Getter;
+import me.metallicgoat.hotbarmanageraddon.config.LoadConfigs;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -36,7 +38,7 @@ public class HotbarManagerPlugin extends JavaPlugin {
                 "------------------------------"
         );
 
-        // TODO load configs (and fucking make them)
+        BedwarsAPI.onReady(LoadConfigs::loadConfigs);
     }
 
     public void onDisable(){
