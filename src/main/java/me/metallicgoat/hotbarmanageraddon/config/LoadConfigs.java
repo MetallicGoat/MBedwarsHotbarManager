@@ -1,10 +1,10 @@
 package me.metallicgoat.hotbarmanageraddon.config;
 
-import de.marcely.bedwars.Console;
 import de.marcely.bedwars.api.GameAPI;
 import de.marcely.bedwars.api.event.ConfigsLoadEvent;
 import de.marcely.bedwars.api.game.shop.ShopItem;
 import de.marcely.bedwars.api.game.shop.ShopPage;
+import me.metallicgoat.hotbarmanageraddon.Console;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 

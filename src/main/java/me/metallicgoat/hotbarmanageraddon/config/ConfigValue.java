@@ -51,4 +51,13 @@ public class ConfigValue {
             "&eClick while selected to remove"
     );
 
+    public static boolean open_gui_from_shop_enabled = true;
+    public static Material open_gui_from_shop_material = Helper.get().getMaterialByName("BLAZE_POWDER");
+    public static String open_gui_from_shop_title = "&aOpen Hotbar Manager";
+    public static List<String> open_gui_from_shop_lore = Arrays.asList(
+            "&7Opens the hotbar manager",
+            "",
+            "&eClick to open"
+    );
+
 }

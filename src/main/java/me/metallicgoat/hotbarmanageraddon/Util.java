@@ -1,8 +1,10 @@
 package me.metallicgoat.hotbarmanageraddon;
 
 import de.marcely.bedwars.api.message.Message;
+import de.marcely.bedwars.tools.Helper;
 import de.marcely.bedwars.tools.NMSHelper;
 import de.marcely.bedwars.tools.Pair;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -15,7 +17,10 @@ public class Util {
     public static ItemStack buildItemStack(Material item, String displayName, List<String> lore, List<Pair<String, String>> placeholders, int amount){
 
         final ItemStack itemStack = NMSHelper.get().hideAttributes(new ItemStack(item));
-        final ItemMeta meta = itemStack.getItemMeta();
+        ItemMeta meta = itemStack.getItemMeta();
+
+        if(meta == null)
+            meta = Bukkit.getItemFactory().getItemMeta(item);
 
         meta.setDisplayName(Message.build(displayName).done());
 

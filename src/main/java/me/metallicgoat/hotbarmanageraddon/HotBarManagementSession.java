@@ -126,11 +126,12 @@ public class HotBarManagementSession {
             @Override
             public void onClick(Player player, boolean b, boolean b1) {
 
-                player.closeInventory();
-
-                if(inShop)
+                if(inShop) {
                     GameAPI.get().openShop(player);
+                    return;
+                }
 
+                player.closeInventory();
             }
         }), 3, 0);
 

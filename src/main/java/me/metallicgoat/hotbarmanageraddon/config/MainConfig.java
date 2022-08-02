@@ -132,8 +132,14 @@ public class MainConfig {
             }
         }
 
+        ConfigValue.open_gui_from_shop_enabled = config.getBoolean("Shop-Button.Enabled");
+        ConfigValue.open_gui_from_shop_material = getMaterialByName(config, "Shop-Button.Material", "BLAZE_POWDER");
+        ConfigValue.open_gui_from_shop_title = config.getString("Shop-Button.Title", ConfigValue.open_gui_from_shop_title);
+        if(config.contains("Shop-Button.Lore"))
+            ConfigValue.open_gui_from_shop_lore = config.getStringList("Shop-Button.Lore");
+
         // auto update file if newer version
-        CURRENT_VERSION = config.getInt("file-version", -1);
+        // TODO CURRENT_VERSION = config.getInt("file-version", -1);
 
         if (CURRENT_VERSION != VERSION)
             save();
@@ -210,6 +216,14 @@ public class MainConfig {
 
             config.set("Default-Hotbar", defaults);
         }
+
+        config.addEmptyLine();
+
+        config.addComment("Button to access Hotbar Manager from shop");
+        config.set("Shop-Button.Enabled", ConfigValue.open_gui_from_shop_enabled);
+        config.set("Shop-Button.Material", ConfigValue.open_gui_from_shop_material.name());
+        config.set("Shop-Button.Title", ConfigValue.open_gui_from_shop_title);
+        config.set("Shop-Button.Lore", ConfigValue.open_gui_from_shop_lore);
 
 
         config.save(getFile());
