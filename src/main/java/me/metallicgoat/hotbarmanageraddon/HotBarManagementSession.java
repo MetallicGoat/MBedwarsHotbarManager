@@ -6,6 +6,7 @@ import de.marcely.bedwars.api.GameAPI;
 import de.marcely.bedwars.api.game.shop.ShopPage;
 import de.marcely.bedwars.api.message.Message;
 import de.marcely.bedwars.api.player.PlayerDataAPI;
+import de.marcely.bedwars.tools.Pair;
 import de.marcely.bedwars.tools.gui.CenterFormat;
 import de.marcely.bedwars.tools.gui.ClickListener;
 import de.marcely.bedwars.tools.gui.ClickableGUI;
@@ -17,10 +18,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 public class HotBarManagementSession {
 
@@ -58,10 +56,12 @@ public class HotBarManagementSession {
             if(ConfigValue.excluded_categories.contains(page))
                 continue;
 
+            final String catName = ChatColor.stripColor(page.getDisplayName());
+
             final ItemStack guiIcon = Util.buildItemStack(
                     page.getIcon().getType(),
-                    Message.build(ConfigValue.categories_gui_title).placeholder("category-display-name", ChatColor.stripColor(page.getDisplayName())).done(),
-                    ConfigValue.categories_gui_lore, 1);
+                    Message.build(ConfigValue.categories_gui_title).placeholder("category-name", catName).placeholder("selected-slot", String.valueOf(selectedSlot + 1)).done(),
+                    ConfigValue.categories_gui_lore, Arrays.asList(new Pair<>("category-name", catName), new Pair<>("selected-slot", String.valueOf(selectedSlot + 1))),1);
 
             gui.setItem(new GUIItem(guiIcon, categoryClickListener(page.getName())), i, 2);
             i++;
@@ -82,10 +82,12 @@ public class HotBarManagementSession {
             if(page == null)
                 continue;
 
+            final String catName = ChatColor.stripColor(page.getDisplayName());
+
             final ItemStack guiIcon = Util.buildItemStack(
                     page.getIcon().getType(),
-                    Message.build(ConfigValue.hotbar_gui_items_title).placeholder("category-display-name", ChatColor.stripColor(page.getDisplayName())).done(),
-                    ConfigValue.hotbar_gui_items_lore, 1);
+                    Message.build(ConfigValue.hotbar_gui_items_title).placeholder("category-name", catName).placeholder("selected-slot", String.valueOf(selectedSlot + 1)).done(),
+                    ConfigValue.hotbar_gui_items_lore, Arrays.asList(new Pair<>("category-name", catName), new Pair<>("selected-slot", String.valueOf(selectedSlot + 1))), 1);
 
             gui.setItem(new GUIItem(guiIcon, hotBarClickListener(entry.getKey())), entry.getKey(), 4);
         }
@@ -118,7 +120,7 @@ public class HotBarManagementSession {
                 ConfigValue.close_button_icon,
                 ConfigValue.close_button_title,
                 ConfigValue.close_button_lore,
-                1);
+                null, 1);
 
         gui.setItem(new GUIItem(closeItem, new ClickListener() {
             @Override
@@ -136,7 +138,7 @@ public class HotBarManagementSession {
                 ConfigValue.reset_defaults_button_icon,
                 ConfigValue.reset_defaults_button_title,
                 ConfigValue.reset_defaults_button_lore,
-                1);
+                null, 1);
 
         gui.setItem(new GUIItem(resetItem, new ClickListener() {
             @Override

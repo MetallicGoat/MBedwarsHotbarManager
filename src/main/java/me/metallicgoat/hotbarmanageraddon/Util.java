@@ -1,7 +1,8 @@
 package me.metallicgoat.hotbarmanageraddon;
 
 import de.marcely.bedwars.api.message.Message;
-import de.marcely.bedwars.tools.Helper;
+import de.marcely.bedwars.tools.NMSHelper;
+import de.marcely.bedwars.tools.Pair;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -11,16 +12,9 @@ import java.util.List;
 
 public class Util {
 
-    // I'm tired, ok
-    public static Material getMaterialByNameNotNull(String name){
-        final Material material = Helper.get().getMaterialByName(name);
+    public static ItemStack buildItemStack(Material item, String displayName, List<String> lore, List<Pair<String, String>> placeholders, int amount){
 
-        return material != null ? material : Material.AIR;
-    }
-
-    public static ItemStack buildItemStack(Material item, String displayName, List<String> lore, int amount){
-
-        final ItemStack itemStack = new ItemStack(item);
+        final ItemStack itemStack = NMSHelper.get().hideAttributes(new ItemStack(item));
         final ItemMeta meta = itemStack.getItemMeta();
 
         meta.setDisplayName(Message.build(displayName).done());
@@ -29,8 +23,17 @@ public class Util {
 
             final List<String> formattedLore =new ArrayList<>();
 
-            for(String s : lore)
-                formattedLore.add(Message.build(s).done());
+            for(String s : lore) {
+
+                final Message message = Message.build(s);
+
+                if(placeholders != null) {
+                    for (Pair<String, String> placeholder : placeholders)
+                        message.placeholder(placeholder.getKey(), placeholder.getValue());
+                }
+
+                formattedLore.add(message.done());
+            }
 
             meta.setLore(formattedLore);
         }

@@ -6,6 +6,7 @@ import de.marcely.bedwars.tools.Helper;
 import de.marcely.bedwars.tools.YamlConfigurationDescriptor;
 import me.metallicgoat.hotbarmanageraddon.HotbarManagerPlugin;
 import me.metallicgoat.hotbarmanageraddon.Util;
+import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
@@ -54,12 +55,12 @@ public class MainConfig {
 
         // read it
         // TODO improve this messy ass reading
-        ConfigValue.close_button_icon = Util.getMaterialByNameNotNull(config.getString("Close-Button.Icon", "ARROW"));
+        ConfigValue.close_button_icon = getMaterialByName(config, "Close-Button.Icon", "ARROW");
         ConfigValue.close_button_title = config.getString("Close-Button.Title", ConfigValue.close_button_title);
         if(config.contains("Close-Button.Lore"))
             ConfigValue.close_button_lore = config.getStringList("Close-Button.Lore");
 
-        ConfigValue.reset_defaults_button_icon = Util.getMaterialByNameNotNull(config.getString("Reset-Defaults-Button.Icon", "BARRIER"));
+        ConfigValue.reset_defaults_button_icon = getMaterialByName(config, "Reset-Defaults-Button.Icon", "BARRIER");
         ConfigValue.reset_defaults_button_title = config.getString("Reset-Defaults-Button.Title", ConfigValue.reset_defaults_button_title);
         if(config.contains("Reset-Defaults-Button.Lore"))
             ConfigValue.reset_defaults_button_lore = config.getStringList("Reset-Defaults-Button.Lore");
@@ -72,8 +73,8 @@ public class MainConfig {
         if(config.contains("Hotbar-Items.Lore"))
             ConfigValue.hotbar_gui_items_lore = config.getStringList("Hotbar-Items.Lore");
 
-        ConfigValue.divider_material = new ItemStack(Util.getMaterialByNameNotNull(config.getString("Divider-Material", "gray_stained_glass_pane")));
-        ConfigValue.selected_slot_material = new ItemStack(Util.getMaterialByNameNotNull(config.getString("Selected-Slot-Material", "red_stained_glass_pane")));
+        ConfigValue.divider_material = new ItemStack(getMaterialByName(config, "Divider-Material", "gray_stained_glass_pane"));
+        ConfigValue.selected_slot_material = new ItemStack(getMaterialByName(config, "Selected-Slot-Material", "red_stained_glass_pane"));
 
         {
             if(config.contains("Excluded-Categories")){
@@ -213,4 +214,13 @@ public class MainConfig {
 
         config.save(getFile());
     }
+
+    private static Material getMaterialByName(FileConfiguration config, String path, String def){
+
+        final String matName = config.getString(path, def);
+        final Material material = Helper.get().getMaterialByName(matName);
+
+        return material != null ? material : Material.AIR;
+    }
+
 }
