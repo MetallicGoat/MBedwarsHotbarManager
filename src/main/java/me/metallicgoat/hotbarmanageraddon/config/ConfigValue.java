@@ -2,7 +2,6 @@ package me.metallicgoat.hotbarmanageraddon.config;
 
 import de.marcely.bedwars.api.game.shop.ShopPage;
 import de.marcely.bedwars.tools.Helper;
-import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
@@ -16,14 +15,14 @@ public class ConfigValue {
             "&7After closing you should notice",
             "&7changes taking effect immediately"
     );
-    public static Material close_button_icon = Helper.get().getMaterialByName("ARROW");
+    public static ItemStack close_button_icon = Helper.get().parseItemStack("arrow");
 
     public static String reset_defaults_button_title = "&cReset to default";
     public static List<String> reset_defaults_button_lore = Arrays.asList(
             "&7Click to reset your hotbar",
             "&7settings to default"
     );
-    public static Material reset_defaults_button_icon = Helper.get().getMaterialByName("BARRIER");
+    public static ItemStack reset_defaults_button_icon = Helper.get().parseItemStack("barrier");
 
     // NOTE: defaults loaded on start / reload
     public static HashMap<Integer, ShopPage> hotbar_defaults = new HashMap<>();
@@ -52,7 +51,7 @@ public class ConfigValue {
     );
 
     public static boolean open_gui_from_shop_enabled = true;
-    public static Material open_gui_from_shop_material = Helper.get().getMaterialByName("BLAZE_POWDER");
+    public static ItemStack open_gui_from_shop_material = Helper.get().parseItemStack("blaze_powder");
     public static String open_gui_from_shop_title = "&aOpen Hotbar Manager";
     public static List<String> open_gui_from_shop_lore = Arrays.asList(
             "&7Opens the hotbar manager",

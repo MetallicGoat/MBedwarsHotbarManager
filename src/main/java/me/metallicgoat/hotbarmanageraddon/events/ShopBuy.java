@@ -10,6 +10,7 @@ import de.marcely.bedwars.api.game.shop.ShopPage;
 import de.marcely.bedwars.api.game.shop.product.ShopProduct;
 import de.marcely.bedwars.api.player.PlayerDataAPI;
 import de.marcely.bedwars.api.player.PlayerProperties;
+import me.metallicgoat.hotbarmanageraddon.config.ConfigValue;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -44,7 +45,9 @@ public class ShopBuy implements Listener {
         final ShopPage page = event.getItem().getPage();
         final Player player = event.getPlayer();
 
-        // TODO check if category is enabled
+        if(ConfigValue.excluded_categories.contains(page))
+            return;
+
         // TODO make sure item is not wearable
 
         final ItemStack givenItem = getGivingItem(event.getItem(), player, event.getArena());

@@ -14,13 +14,17 @@ import java.util.List;
 
 public class Util {
 
-    public static ItemStack buildItemStack(Material item, String displayName, List<String> lore, List<Pair<String, String>> placeholders, int amount){
+    public static ItemStack buildItemStack(Material material, String displayName, List<String> lore, List<Pair<String, String>> placeholders, int amount) {
+        return buildItemStack(new ItemStack(material), displayName, lore, placeholders, amount);
+    }
 
-        final ItemStack itemStack = NMSHelper.get().hideAttributes(new ItemStack(item));
+    public static ItemStack buildItemStack(ItemStack item, String displayName, List<String> lore, List<Pair<String, String>> placeholders, int amount){
+
+        final ItemStack itemStack = NMSHelper.get().hideAttributes(item);
         ItemMeta meta = itemStack.getItemMeta();
 
         if(meta == null)
-            meta = Bukkit.getItemFactory().getItemMeta(item);
+            meta = Bukkit.getItemFactory().getItemMeta(item.getType());
 
         meta.setDisplayName(Message.build(displayName).done());
 

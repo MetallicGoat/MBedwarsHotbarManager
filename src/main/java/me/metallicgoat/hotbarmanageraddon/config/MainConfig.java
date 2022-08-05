@@ -5,7 +5,6 @@ import de.marcely.bedwars.api.game.shop.ShopPage;
 import de.marcely.bedwars.tools.Helper;
 import de.marcely.bedwars.tools.YamlConfigurationDescriptor;
 import me.metallicgoat.hotbarmanageraddon.HotbarManagerPlugin;
-import me.metallicgoat.hotbarmanageraddon.Util;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -55,12 +54,14 @@ public class MainConfig {
 
         // read it
         // TODO improve this messy ass reading
-        ConfigValue.close_button_icon = getMaterialByName(config, "Close-Button.Icon", "ARROW");
+        System.out.println(Helper.get().composeItemStack(new ItemStack(ConfigValue.divider_material)));
+
+        ConfigValue.close_button_icon = parseItemStack(config, "Close-Button.Icon", "ARROW");
         ConfigValue.close_button_title = config.getString("Close-Button.Title", ConfigValue.close_button_title);
         if(config.contains("Close-Button.Lore"))
             ConfigValue.close_button_lore = config.getStringList("Close-Button.Lore");
 
-        ConfigValue.reset_defaults_button_icon = getMaterialByName(config, "Reset-Defaults-Button.Icon", "BARRIER");
+        ConfigValue.reset_defaults_button_icon = parseItemStack(config, "Reset-Defaults-Button.Icon", "BARRIER");
         ConfigValue.reset_defaults_button_title = config.getString("Reset-Defaults-Button.Title", ConfigValue.reset_defaults_button_title);
         if(config.contains("Reset-Defaults-Button.Lore"))
             ConfigValue.reset_defaults_button_lore = config.getStringList("Reset-Defaults-Button.Lore");
@@ -73,8 +74,8 @@ public class MainConfig {
         if(config.contains("Hotbar-Items.Lore"))
             ConfigValue.hotbar_gui_items_lore = config.getStringList("Hotbar-Items.Lore");
 
-        ConfigValue.divider_material = new ItemStack(getMaterialByName(config, "Divider-Material", "gray_stained_glass_pane"));
-        ConfigValue.selected_slot_material = new ItemStack(getMaterialByName(config, "Selected-Slot-Material", "red_stained_glass_pane"));
+        ConfigValue.divider_material = new ItemStack(parseItemStack(config, "Divider-Material", "gray_stained_glass_pane"));
+        ConfigValue.selected_slot_material = new ItemStack(parseItemStack(config, "Selected-Slot-Material", "red_stained_glass_pane"));
 
         {
             if(config.contains("Excluded-Categories")){
@@ -133,7 +134,7 @@ public class MainConfig {
         }
 
         ConfigValue.open_gui_from_shop_enabled = config.getBoolean("Shop-Button.Enabled");
-        ConfigValue.open_gui_from_shop_material = getMaterialByName(config, "Shop-Button.Material", "BLAZE_POWDER");
+        ConfigValue.open_gui_from_shop_material = parseItemStack(config, "Shop-Button.Material", "blaze_powder");
         ConfigValue.open_gui_from_shop_title = config.getString("Shop-Button.Title", ConfigValue.open_gui_from_shop_title);
         if(config.contains("Shop-Button.Lore"))
             ConfigValue.open_gui_from_shop_lore = config.getStringList("Shop-Button.Lore");
@@ -157,14 +158,14 @@ public class MainConfig {
         config.addEmptyLine();
 
         config.addComment("Hotbar Manager close button");
-        config.set("Close-Button.Icon", ConfigValue.close_button_icon.name());
+        config.set("Close-Button.Icon", Helper.get().composeItemStack(ConfigValue.close_button_icon));
         config.set("Close-Button.Title", ConfigValue.close_button_title);
         config.set("Close-Button.Lore", ConfigValue.close_button_lore);
 
         config.addEmptyLine();
 
         config.addComment("Hotbar Manager reset defaults button");
-        config.set("Reset-Defaults-Button.Icon", ConfigValue.reset_defaults_button_icon.name());
+        config.set("Reset-Defaults-Button.Icon", Helper.get().composeItemStack(ConfigValue.reset_defaults_button_icon));
         config.set("Reset-Defaults-Button.Title", ConfigValue.reset_defaults_button_title);
         config.set("Reset-Defaults-Button.Lore", ConfigValue.reset_defaults_button_lore);
 
@@ -183,12 +184,12 @@ public class MainConfig {
         config.addEmptyLine();
 
         config.addComment("The material used to separate the hotbar from the category selection buttons in the Hotbar Manager GUI");
-        config.set("Divider-Material", ConfigValue.divider_material.getType().name());
+        config.set("Divider-Material", Helper.get().composeItemStack(ConfigValue.divider_material));
 
         config.addEmptyLine();
 
         config.addComment("The material used to highlight the selected slot in the Hotbar Manager GUI");
-        config.set("Selected-Slot-Material", ConfigValue.selected_slot_material.getType().name());
+        config.set("Selected-Slot-Material", Helper.get().composeItemStack(ConfigValue.selected_slot_material));
 
         config.addEmptyLine();
 
@@ -221,7 +222,7 @@ public class MainConfig {
 
         config.addComment("Button to access Hotbar Manager from shop");
         config.set("Shop-Button.Enabled", ConfigValue.open_gui_from_shop_enabled);
-        config.set("Shop-Button.Material", ConfigValue.open_gui_from_shop_material.name());
+        config.set("Shop-Button.Material", Helper.get().composeItemStack(ConfigValue.open_gui_from_shop_material));
         config.set("Shop-Button.Title", ConfigValue.open_gui_from_shop_title);
         config.set("Shop-Button.Lore", ConfigValue.open_gui_from_shop_lore);
 
@@ -229,12 +230,12 @@ public class MainConfig {
         config.save(getFile());
     }
 
-    private static Material getMaterialByName(FileConfiguration config, String path, String def){
+    private static ItemStack parseItemStack(FileConfiguration config, String path, String def){
 
         final String matName = config.getString(path, def);
-        final Material material = Helper.get().getMaterialByName(matName);
+        final ItemStack is = Helper.get().parseItemStack(matName);
 
-        return material != null ? material : Material.AIR;
+        return is != null ? is : new ItemStack(Material.STONE);
     }
 
 }
