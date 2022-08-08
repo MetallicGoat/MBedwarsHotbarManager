@@ -13,7 +13,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-public class ShopPostProcess implements Listener {
+public class AddShopButton implements Listener {
 
     // TODO improve this a lot
 

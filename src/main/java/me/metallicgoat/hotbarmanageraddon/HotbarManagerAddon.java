@@ -4,10 +4,10 @@ import de.marcely.bedwars.api.BedwarsAPI;
 import de.marcely.bedwars.api.BedwarsAddon;
 import de.marcely.bedwars.api.command.SubCommand;
 import me.metallicgoat.hotbarmanageraddon.config.LoadConfigs;
-import me.metallicgoat.hotbarmanageraddon.events.PlayerJoin;
-import me.metallicgoat.hotbarmanageraddon.events.RoundStart;
-import me.metallicgoat.hotbarmanageraddon.events.ShopBuy;
-import me.metallicgoat.hotbarmanageraddon.events.ShopPostProcess;
+import me.metallicgoat.hotbarmanageraddon.events.FirstJoin;
+import me.metallicgoat.hotbarmanageraddon.events.ManageSpawn;
+import me.metallicgoat.hotbarmanageraddon.events.ManageBuy;
+import me.metallicgoat.hotbarmanageraddon.events.AddShopButton;
 import org.bukkit.plugin.PluginManager;
 
 public class HotbarManagerAddon extends BedwarsAddon {
@@ -34,10 +34,10 @@ public class HotbarManagerAddon extends BedwarsAddon {
 
         manager.registerEvents(new LoadConfigs(), plugin);
 
-        manager.registerEvents(new PlayerJoin(), plugin);
-        manager.registerEvents(new RoundStart(), plugin);
-        manager.registerEvents(new ShopBuy(), plugin);
-        manager.registerEvents(new ShopPostProcess(), plugin);
+        manager.registerEvents(new FirstJoin(), plugin);
+        manager.registerEvents(new ManageSpawn(), plugin);
+        manager.registerEvents(new ManageBuy(), plugin);
+        manager.registerEvents(new AddShopButton(), plugin);
 
     }
 

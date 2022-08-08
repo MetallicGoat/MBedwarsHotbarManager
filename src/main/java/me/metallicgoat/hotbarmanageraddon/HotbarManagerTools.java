@@ -1,9 +1,10 @@
-package me.metallicgoat.hotbarmanageraddon.events;
+package me.metallicgoat.hotbarmanageraddon;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import de.marcely.bedwars.api.GameAPI;
 import de.marcely.bedwars.api.arena.Arena;
+import de.marcely.bedwars.api.arena.Team;
 import de.marcely.bedwars.api.event.player.PlayerBuyInShopEvent;
 import de.marcely.bedwars.api.game.shop.ShopItem;
 import de.marcely.bedwars.api.game.shop.ShopPage;
@@ -11,12 +12,7 @@ import de.marcely.bedwars.api.game.shop.product.ShopProduct;
 import de.marcely.bedwars.api.player.PlayerDataAPI;
 import de.marcely.bedwars.api.player.PlayerProperties;
 import de.marcely.bedwars.tools.Helper;
-import me.metallicgoat.hotbarmanageraddon.config.ConfigValue;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
@@ -24,41 +20,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-public class ShopBuy implements Listener {
+public class HotbarManagerTools {
 
-    // TODO Simplify this mess
-    // TODO add support for shopItems with multiple products
+    public static boolean giveItemsProperly(ItemStack givenItem, Player player, ShopPage page, PlayerBuyInShopEvent event, boolean force){
 
-
-    /*
-     * 1. Try to put item in slot with similar itemstack
-     * 2. Try to put item in null slot for that category
-     * 3. Try and force move an item
-     * 4. Give up. Add Item to inventory normally.
-     */
-
-    @EventHandler(priority = EventPriority.HIGHEST)
-    public void onShopBuy(PlayerBuyInShopEvent event) {
-
-        if (!event.getProblems().isEmpty())
-            return;
-
-        final ShopPage page = event.getItem().getPage();
-        final Player player = event.getPlayer();
-
-        if(ConfigValue.excluded_categories.contains(page))
-            return;
-
-        // TODO make sure item is not wearable
-
-        final ItemStack givenItem = getGivingItem(event.getItem(), player, event.getArena());
-
-        giveItemsProperly(givenItem, player, page, event, false);
-
-
-    }
-
-    public static void giveItemsProperly(ItemStack givenItem, Player player, ShopPage page, PlayerBuyInShopEvent event, boolean force){
+        if(page == null)
+            return false;
 
         // We will handle giving the items
         if(event != null)
@@ -69,7 +36,7 @@ public class ShopBuy implements Listener {
 
         if (slot == null) {
             Helper.get().givePlayerItem(player, givenItem);
-            return;
+            return true;
         }
 
         final ItemStack currItemInSlot = inventory.getItem(slot);
@@ -105,25 +72,32 @@ public class ShopBuy implements Listener {
             } else {
                 // Force move an item
                 inventory.setItem(slot, givenItem);
-                Helper.get().givePlayerItem(player, givenItem);
+                Helper.get().givePlayerItem(player, currItemInSlot.clone());
             }
         }
+
+        return true;
     }
 
-    private ItemStack getGivingItem(ShopItem item, Player player, Arena arena) {
+    // Wrote this at 12 AM after an 8 hour workday on a weekend. Give me a break plz
+    public static ShopPage getItemPage(ItemStack givenStack, Player player, Arena arena, Team team){
 
-        for (ShopProduct product : item.getProducts()) {
-
-            final ItemStack[] items = product.getGivingItems(player, arena.getPlayerTeam(player), arena, 1);
-
-            if (items != null && items.length != 0)
-                return items[0];
+        for(ShopPage page : GameAPI.get().getShopPages()){
+            for(ShopItem item : page.getItems()){
+                for(ShopProduct product : item.getProducts()){
+                    for(ItemStack checkedStack : product.getGivingItems(player, team, arena, 1)){
+                        if(checkedStack.isSimilar(givenStack)){
+                            return page;
+                        }
+                    }
+                }
+            }
         }
-
-        return new ItemStack(Material.AIR);
+        return null;
     }
 
-    private static Integer getPreferredSlot(ItemStack givenItem, ShopPage page, Player player, boolean force) {
+
+    public static Integer getPreferredSlot(ItemStack givenItem, ShopPage page, Player player, boolean force) {
 
         final Optional<PlayerProperties> propertiesOptional = PlayerDataAPI.get().getPropertiesNow(player.getUniqueId());
 
@@ -156,7 +130,7 @@ public class ShopBuy implements Listener {
                 return entry.getKey();
         }
 
-        // Try to find empty slot
+        // Try to find empty configured slot
         for (Map.Entry<Integer, String> entry : layout.entrySet()) {
 
             if (!entry.getValue().equals(category))
@@ -186,7 +160,7 @@ public class ShopBuy implements Listener {
         return null;
     }
 
-    private static boolean isItemInSameCategory(ShopPage page, ItemStack slotStack, Player player){
+    public static boolean isItemInSameCategory(ShopPage page, ItemStack slotStack, Player player){
 
         final Arena arena = GameAPI.get().getArenaByPlayer(player);
 

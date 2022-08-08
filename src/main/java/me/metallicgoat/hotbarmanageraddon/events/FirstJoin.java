@@ -11,7 +11,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import java.util.HashMap;
 import java.util.Map;
 
-public class PlayerJoin implements Listener {
+public class FirstJoin implements Listener {
 
     // not on gui open because they may into a game first
 
