@@ -1,7 +1,6 @@
 package me.metallicgoat.hotbarmanageraddon;
 
 import de.marcely.bedwars.api.message.Message;
-import de.marcely.bedwars.tools.Helper;
 import de.marcely.bedwars.tools.NMSHelper;
 import de.marcely.bedwars.tools.Pair;
 import org.bukkit.Bukkit;
@@ -54,4 +53,12 @@ public class Util {
 
     }
 
+    public static boolean isArmor(Material material){
+        String name = material.name();
+
+        if(name.contains("LEGGINGS") || name.contains("BOOTS") || name.contains("CHESTPLATE") || name.contains("HELMET"))
+            return true;
+
+        return false;
+    }
 }

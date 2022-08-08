@@ -10,6 +10,7 @@ import de.marcely.bedwars.api.game.shop.ShopPage;
 import de.marcely.bedwars.api.game.shop.product.ShopProduct;
 import de.marcely.bedwars.api.player.PlayerDataAPI;
 import de.marcely.bedwars.api.player.PlayerProperties;
+import de.marcely.bedwars.tools.Helper;
 import me.metallicgoat.hotbarmanageraddon.config.ConfigValue;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -52,22 +53,22 @@ public class ShopBuy implements Listener {
 
         final ItemStack givenItem = getGivingItem(event.getItem(), player, event.getArena());
 
-        giveItemsProperly(givenItem, player, page, event);
+        giveItemsProperly(givenItem, player, page, event, false);
 
 
     }
 
-    private void giveItemsProperly(ItemStack givenItem, Player player, ShopPage page, PlayerBuyInShopEvent event){
+    public static void giveItemsProperly(ItemStack givenItem, Player player, ShopPage page, PlayerBuyInShopEvent event, boolean force){
 
         // We will handle giving the items
         if(event != null)
             event.setGivingProducts(false);
 
-        final Integer slot = getPreferredSlot(givenItem.clone(), page, player);
+        final Integer slot = getPreferredSlot(givenItem.clone(), page, player, force);
         final Inventory inventory = player.getInventory();
 
         if (slot == null) {
-            inventory.addItem(givenItem);
+            Helper.get().givePlayerItem(player, givenItem);
             return;
         }
 
@@ -92,7 +93,7 @@ public class ShopBuy implements Listener {
                     final ItemStack leftOver = givenItem.clone();
                     leftOver.setAmount(total - maxStack);
 
-                    giveItemsProperly(leftOver, player, page, null);
+                    giveItemsProperly(leftOver, player, page, null, false);
                 }
 
                 // Yay! We don't need to find more space! Everything fits
@@ -104,7 +105,7 @@ public class ShopBuy implements Listener {
             } else {
                 // Force move an item
                 inventory.setItem(slot, givenItem);
-                inventory.addItem(currItemInSlot.clone());
+                Helper.get().givePlayerItem(player, givenItem);
             }
         }
     }
@@ -122,7 +123,7 @@ public class ShopBuy implements Listener {
         return new ItemStack(Material.AIR);
     }
 
-    private Integer getPreferredSlot(ItemStack givenItem, ShopPage page, Player player) {
+    private static Integer getPreferredSlot(ItemStack givenItem, ShopPage page, Player player, boolean force) {
 
         final Optional<PlayerProperties> propertiesOptional = PlayerDataAPI.get().getPropertiesNow(player.getUniqueId());
 
@@ -168,7 +169,7 @@ public class ShopBuy implements Listener {
         }
 
         // Check if we can force move any items
-        if(isHotbarFull(inventory)) {
+        if(isHotbarFull(inventory) || force) {
 
             for (Map.Entry<Integer, String> entry : layout.entrySet()) {
 
@@ -185,7 +186,7 @@ public class ShopBuy implements Listener {
         return null;
     }
 
-    private boolean isItemInSameCategory(ShopPage page, ItemStack slotStack, Player player){
+    private static boolean isItemInSameCategory(ShopPage page, ItemStack slotStack, Player player){
 
         final Arena arena = GameAPI.get().getArenaByPlayer(player);
 
@@ -204,7 +205,7 @@ public class ShopBuy implements Listener {
         return false;
     }
 
-    public boolean isHotbarFull(Inventory inventory){
+    public static boolean isHotbarFull(Inventory inventory){
 
         int i = 0;
 

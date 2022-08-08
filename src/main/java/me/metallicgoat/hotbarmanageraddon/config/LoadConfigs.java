@@ -5,6 +5,8 @@ import de.marcely.bedwars.api.event.ConfigsLoadEvent;
 import de.marcely.bedwars.api.game.shop.ShopItem;
 import de.marcely.bedwars.api.game.shop.ShopPage;
 import me.metallicgoat.hotbarmanageraddon.Console;
+import me.metallicgoat.hotbarmanageraddon.Util;
+import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
@@ -46,9 +48,9 @@ public class LoadConfigs implements Listener {
 
         for(ShopPage page : GameAPI.get().getShopPages()){
             for(ShopItem item : page.getItems()){
-                final String name = item.getIcon().getType().name();
+                final Material material = item.getIcon().getType();
 
-                if(name.contains("LEGGINGS") || name.contains("BOOTS") || name.contains("CHESTPLATE") || name.contains("HELMET"))
+                if(Util.isArmor(material))
                     return page;
             }
         }

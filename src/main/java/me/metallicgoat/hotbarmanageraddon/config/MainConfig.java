@@ -54,7 +54,6 @@ public class MainConfig {
 
         // read it
         // TODO improve this messy ass reading
-        System.out.println(Helper.get().composeItemStack(new ItemStack(ConfigValue.divider_material)));
 
         ConfigValue.close_button_icon = parseItemStack(config, "Close-Button.Icon", "ARROW");
         ConfigValue.close_button_title = config.getString("Close-Button.Title", ConfigValue.close_button_title);
