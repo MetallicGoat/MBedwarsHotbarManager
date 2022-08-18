@@ -143,7 +143,7 @@ public class HotbarManagerTools {
         }
 
         // Check if we can force move any items
-        if(isHotbarFull(inventory) || force) {
+        //if(isHotbarFull(inventory) || force) {
 
             for (Map.Entry<Integer, String> entry : layout.entrySet()) {
 
@@ -155,7 +155,7 @@ public class HotbarManagerTools {
                 if (!isItemInSameCategory(page, currStack, player))
                     return entry.getKey();
             }
-        }
+        //}
 
         return null;
     }

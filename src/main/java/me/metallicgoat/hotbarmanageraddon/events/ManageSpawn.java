@@ -1,11 +1,13 @@
 package me.metallicgoat.hotbarmanageraddon.events;
 
+import de.marcely.bedwars.api.GameAPI;
 import de.marcely.bedwars.api.arena.Arena;
 import de.marcely.bedwars.api.arena.Team;
 import de.marcely.bedwars.api.event.arena.RoundStartEvent;
 import de.marcely.bedwars.api.event.player.PlayerIngameRespawnEvent;
 import de.marcely.bedwars.api.game.shop.ShopPage;
 import de.marcely.bedwars.tools.Helper;
+import me.metallicgoat.hotbarmanageraddon.ArmorSet;
 import me.metallicgoat.hotbarmanageraddon.Console;
 import me.metallicgoat.hotbarmanageraddon.HotbarManagerTools;
 import me.metallicgoat.hotbarmanageraddon.Util;
@@ -36,24 +38,33 @@ public class ManageSpawn implements Listener {
         event.setGivingItems(false);
 
         final Arena arena = event.getArena();
+        final Player player = event.getPlayer();
 
-        for(Player player : arena.getPlayers())
-            manageSpawn(arena, arena.getPlayerTeam(player), player, false);
+        manageSpawn(arena, arena.getPlayerTeam(player), player, false);
 
     }
 
     private static void manageSpawn(Arena arena, Team team, Player player, boolean firstSpawn){
 
-        if(team == null)
-            Console.printWarn("Error giving items on spawn. Please report this to MetallicGoat immediately");
+        if(team == null) {
+            Console.printWarn("Error giving items on spawn. Please report this to MetallicGoat");
+            return;
+        }
 
         final Collection<ItemStack> itemsGiving = arena.getItemsGivenOnSpawn(player, team, firstSpawn, true);
+        final ArmorSet armorSet = new ArmorSet();
 
         for(ItemStack itemStack : itemsGiving) {
-            final ShopPage page = HotbarManagerTools.getItemPage(itemStack, player, arena, team);
+
+            ShopPage page = HotbarManagerTools.getItemPage(itemStack, player, arena, team);
+
+            // For give-items-on Configs
+            if(page == null)
+                page = getLikelyPage(itemStack);
+
 
             if(Util.isArmor(itemStack.getType())) {
-                Helper.get().setPlayerArmor(player, itemStack, firstSpawn);
+                armorSet.setArmor(itemStack);
                 continue;
             }
 
@@ -64,5 +75,20 @@ public class ManageSpawn implements Listener {
 
             HotbarManagerTools.giveItemsProperly(itemStack, player, page, null, true);
         }
+
+        armorSet.wearArmor(player);
+    }
+
+    // TODO make better
+    private static ShopPage getLikelyPage(ItemStack itemStack){
+
+        if(itemStack.getType().name().contains("SWORD")){
+            for(ShopPage page : GameAPI.get().getShopPages()){
+                if(page.getIcon().getType().name().contains("SWORD"))
+                    return page;
+            }
+        }
+
+        return null;
     }
 }

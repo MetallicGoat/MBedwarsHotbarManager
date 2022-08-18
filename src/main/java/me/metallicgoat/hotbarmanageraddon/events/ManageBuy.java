@@ -6,19 +6,21 @@ import de.marcely.bedwars.api.game.shop.ShopItem;
 import de.marcely.bedwars.api.game.shop.ShopPage;
 import de.marcely.bedwars.api.game.shop.product.ShopProduct;
 import me.metallicgoat.hotbarmanageraddon.HotbarManagerTools;
+import me.metallicgoat.hotbarmanageraddon.Util;
 import me.metallicgoat.hotbarmanageraddon.config.ConfigValue;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+
 public class ManageBuy implements Listener {
 
     // TODO Simplify this mess
-    // TODO add support for shopItems with multiple products
-
 
     /*
      * 1. Try to put item in slot with similar itemstack
@@ -39,25 +41,26 @@ public class ManageBuy implements Listener {
         if(ConfigValue.excluded_categories.contains(page))
             return;
 
-        // TODO make sure item is not wearable
 
-        final ItemStack givenItem = getGivingItem(event.getItem(), player, event.getArena());
+        final Collection<ItemStack> givenItems = getGivingItems(event.getItem(), player, event.getArena());
 
-        HotbarManagerTools.giveItemsProperly(givenItem, player, page, event, false);
-
-
+        for(ItemStack givenItem : givenItems) {
+            if(!Util.isArmor(givenItem.getType()))
+                HotbarManagerTools.giveItemsProperly(givenItem, player, page, event, false);
+        }
     }
 
-    private ItemStack getGivingItem(ShopItem item, Player player, Arena arena) {
+    private Collection<ItemStack> getGivingItems(ShopItem item, Player player, Arena arena) {
+
+        final Collection<ItemStack> itemsGiven = new ArrayList<>();
 
         for (ShopProduct product : item.getProducts()) {
 
-            final ItemStack[] items = product.getGivingItems(player, arena.getPlayerTeam(player), arena, 1);
+            final Collection<ItemStack> items = Arrays.asList(product.getGivingItems(player, arena.getPlayerTeam(player), arena, 1));
 
-            if (items != null && items.length != 0)
-                return items[0];
+            itemsGiven.addAll(items);
         }
 
-        return new ItemStack(Material.AIR);
+        return itemsGiven;
     }
 }
