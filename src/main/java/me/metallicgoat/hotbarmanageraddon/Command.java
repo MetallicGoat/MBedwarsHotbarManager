@@ -2,7 +2,6 @@ package me.metallicgoat.hotbarmanageraddon;
 
 import de.marcely.bedwars.api.command.CommandHandler;
 import de.marcely.bedwars.api.command.SubCommand;
-import de.marcely.bedwars.libraries.org.jetbrains.annotations.Nullable;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -33,7 +32,7 @@ public class Command implements CommandHandler {
     }
 
     @Override
-    public @Nullable List<String> onAutocomplete(CommandSender commandSender, String[] strings) {
+    public List<String> onAutocomplete(CommandSender commandSender, String[] strings) {
         return null;
     }
 }
