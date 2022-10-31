@@ -22,13 +22,13 @@ import java.util.Optional;
 
 public class HotbarManagerTools {
 
-    public static boolean giveItemsProperly(ItemStack givenItem, Player player, ShopPage page, PlayerBuyInShopEvent event, boolean force){
+    public static boolean giveItemsProperly(ItemStack givenItem, Player player, ShopPage page, PlayerBuyInShopEvent event, boolean force) {
 
-        if(page == null)
+        if (page == null)
             return false;
 
         // We will handle giving the items
-        if(event != null)
+        if (event != null)
             event.setGivingProducts(false);
 
         final Integer slot = getPreferredSlot(givenItem.clone(), page, player, force);
@@ -80,13 +80,13 @@ public class HotbarManagerTools {
     }
 
     // Wrote this at 12 AM after an 8 hour workday on a weekend. Give me a break plz
-    public static ShopPage getItemPage(ItemStack givenStack, Player player, Arena arena, Team team){
+    public static ShopPage getItemPage(ItemStack givenStack, Player player, Arena arena, Team team) {
 
-        for(ShopPage page : GameAPI.get().getShopPages()){
-            for(ShopItem item : page.getItems()){
-                for(ShopProduct product : item.getProducts()){
-                    for(ItemStack checkedStack : product.getGivingItems(player, team, arena, 1)){
-                        if(checkedStack.isSimilar(givenStack)){
+        for (ShopPage page : GameAPI.get().getShopPages()) {
+            for (ShopItem item : page.getItems()) {
+                for (ShopProduct product : item.getProducts()) {
+                    for (ItemStack checkedStack : product.getGivingItems(player, team, arena, 1)) {
+                        if (checkedStack.isSimilar(givenStack)) {
                             return page;
                         }
                     }
@@ -110,7 +110,8 @@ public class HotbarManagerTools {
         if (!json.isPresent())
             return null;
 
-        final HashMap<Integer, String> layout = new Gson().fromJson(json.get(), new TypeToken<HashMap<Integer, String>>() {}.getType());
+        final HashMap<Integer, String> layout = new Gson().fromJson(json.get(), new TypeToken<HashMap<Integer, String>>() {
+        }.getType());
 
         if (layout == null)
             return null;
@@ -143,52 +144,36 @@ public class HotbarManagerTools {
         }
 
         // Check if we can force move any items
-        //if(isHotbarFull(inventory) || force) {
+        for (Map.Entry<Integer, String> entry : layout.entrySet()) {
 
-            for (Map.Entry<Integer, String> entry : layout.entrySet()) {
+            if (!entry.getValue().equals(category))
+                continue;
 
-                if (!entry.getValue().equals(category))
-                    continue;
+            final ItemStack currStack = inventory.getItem(entry.getKey());
 
-                final ItemStack currStack = inventory.getItem(entry.getKey());
-
-                if (!isItemInSameCategory(page, currStack, player))
-                    return entry.getKey();
-            }
-        //}
+            if (!isItemInSameCategory(page, currStack, player))
+                return entry.getKey();
+        }
 
         return null;
     }
 
-    public static boolean isItemInSameCategory(ShopPage page, ItemStack slotStack, Player player){
+    public static boolean isItemInSameCategory(ShopPage page, ItemStack slotStack, Player player) {
 
         final Arena arena = GameAPI.get().getArenaByPlayer(player);
 
-        if(arena == null)
+        if (arena == null)
             return false;
 
-        for(ShopItem item : page.getItems()){
-            for(ShopProduct product : item.getProducts()){
-                for(ItemStack itemStack : product.getGivingItems(player, arena.getPlayerTeam(player), arena, 1)){
-                    if(itemStack.isSimilar(slotStack))
+        for (ShopItem item : page.getItems()) {
+            for (ShopProduct product : item.getProducts()) {
+                for (ItemStack itemStack : product.getGivingItems(player, arena.getPlayerTeam(player), arena, 1)) {
+                    if (itemStack.isSimilar(slotStack))
                         return true;
                 }
             }
         }
 
         return false;
-    }
-
-    public static boolean isHotbarFull(Inventory inventory){
-
-        int i = 0;
-
-        while(i < 9){
-            if(inventory.getItem(i) == null)
-                return false;
-
-            i++;
-        }
-        return true;
     }
 }

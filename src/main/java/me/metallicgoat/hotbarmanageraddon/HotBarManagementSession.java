@@ -7,10 +7,7 @@ import de.marcely.bedwars.api.game.shop.ShopPage;
 import de.marcely.bedwars.api.message.Message;
 import de.marcely.bedwars.api.player.PlayerDataAPI;
 import de.marcely.bedwars.tools.Pair;
-import de.marcely.bedwars.tools.gui.CenterFormat;
-import de.marcely.bedwars.tools.gui.ClickListener;
-import de.marcely.bedwars.tools.gui.ClickableGUI;
-import de.marcely.bedwars.tools.gui.GUIItem;
+import de.marcely.bedwars.tools.gui.*;
 import de.marcely.bedwars.tools.gui.type.ChestGUI;
 import me.metallicgoat.hotbarmanageraddon.config.ConfigValue;
 import org.bukkit.ChatColor;
@@ -40,9 +37,9 @@ public class HotBarManagementSession {
         buildHotBarManagerGUI().open(player);
     }
 
-    private ClickableGUI buildHotBarManagerGUI(){
+    private GUI buildHotBarManagerGUI(){
 
-        final ClickableGUI gui = new ChestGUI(6, Message.build(ConfigValue.gui_title).done());
+        final ChestGUI gui = new ChestGUI(6, Message.build(ConfigValue.gui_title).done());
 
         addTopButtons(gui);
 
@@ -114,7 +111,7 @@ public class HotBarManagementSession {
         return gui;
     }
 
-    private void addTopButtons(ClickableGUI gui){
+    private void addTopButtons(ChestGUI gui){
 
         final ItemStack closeItem = Util.buildItemStack(
                 ConfigValue.close_button_icon,
@@ -156,6 +153,8 @@ public class HotBarManagementSession {
                 openGUI();
             }
         }), 5, 0);
+
+        gui.addCloseListener(player -> saveHotBarData());
     }
 
     private void drawDivider(ClickableGUI gui, Integer selectedSlotX, int y){
@@ -194,7 +193,6 @@ public class HotBarManagementSession {
                     return;
 
                 categorySlotMap.put(selectedSlot, pageName);
-                saveHotBarData();
                 openGUI();
             }
         };
@@ -208,7 +206,6 @@ public class HotBarManagementSession {
 
                 if(shiftClick){
                     categorySlotMap.remove(slot);
-                    saveHotBarData();
                     openGUI();
                     return;
                 }
