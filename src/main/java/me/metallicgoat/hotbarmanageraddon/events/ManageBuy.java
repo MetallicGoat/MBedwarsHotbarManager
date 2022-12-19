@@ -19,19 +19,8 @@ import java.util.Arrays;
 import java.util.Collection;
 
 public class ManageBuy implements Listener {
-
-    // TODO Simplify this mess
-
-    /*
-     * 1. Try to put item in slot with similar itemstack
-     * 2. Try to put item in null slot for that category
-     * 3. Try and force move an item
-     * 4. Give up. Add Item to inventory normally.
-     */
-
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onShopBuy(PlayerBuyInShopEvent event) {
-
         if (!event.getProblems().isEmpty())
             return;
 
@@ -40,7 +29,6 @@ public class ManageBuy implements Listener {
 
         if(ConfigValue.excluded_categories.contains(page))
             return;
-
 
         final Collection<ItemStack> givenItems = getGivingItems(event.getItem(), player, event.getArena());
 
@@ -51,13 +39,10 @@ public class ManageBuy implements Listener {
     }
 
     private Collection<ItemStack> getGivingItems(ShopItem item, Player player, Arena arena) {
-
         final Collection<ItemStack> itemsGiven = new ArrayList<>();
 
         for (ShopProduct product : item.getProducts()) {
-
             final Collection<ItemStack> items = Arrays.asList(product.getGivingItems(player, arena.getPlayerTeam(player), arena, 1));
-
             itemsGiven.addAll(items);
         }
 

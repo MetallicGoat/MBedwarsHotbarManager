@@ -13,8 +13,7 @@ import java.util.Map;
 
 public class FirstJoin implements Listener {
 
-    // not on gui open because they may into a game first
-
+    // Dont do on gui open event because they may go into a game first
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event){
         PlayerDataAPI.get().getProperties(event.getPlayer().getUniqueId(), playerProperties -> {

@@ -22,8 +22,13 @@ import java.util.Optional;
 
 public class HotbarManagerTools {
 
+    /*
+     * 1. Try to put item in slot with similar itemstack
+     * 2. Try to put item in null slot for that category
+     * 3. Try and force move an item
+     * 4. Give up. Add Item to inventory normally.
+     */
     public static boolean giveItemsProperly(ItemStack givenItem, Player player, ShopPage page, PlayerBuyInShopEvent event, boolean force) {
-
         if (page == null)
             return false;
 
@@ -98,7 +103,6 @@ public class HotbarManagerTools {
 
 
     public static Integer getPreferredSlot(ItemStack givenItem, ShopPage page, Player player, boolean force) {
-
         final Optional<PlayerProperties> propertiesOptional = PlayerDataAPI.get().getPropertiesNow(player.getUniqueId());
 
         if (!propertiesOptional.isPresent())
@@ -110,8 +114,8 @@ public class HotbarManagerTools {
         if (!json.isPresent())
             return null;
 
-        final HashMap<Integer, String> layout = new Gson().fromJson(json.get(), new TypeToken<HashMap<Integer, String>>() {
-        }.getType());
+        final HashMap<Integer, String> layout = new Gson().fromJson(json.get(),
+                new TypeToken<HashMap<Integer, String>>() {}.getType());
 
         if (layout == null)
             return null;
@@ -133,7 +137,6 @@ public class HotbarManagerTools {
 
         // Try to find empty configured slot
         for (Map.Entry<Integer, String> entry : layout.entrySet()) {
-
             if (!entry.getValue().equals(category))
                 continue;
 
@@ -145,7 +148,6 @@ public class HotbarManagerTools {
 
         // Check if we can force move any items
         for (Map.Entry<Integer, String> entry : layout.entrySet()) {
-
             if (!entry.getValue().equals(category))
                 continue;
 
@@ -159,7 +161,6 @@ public class HotbarManagerTools {
     }
 
     public static boolean isItemInSameCategory(ShopPage page, ItemStack slotStack, Player player) {
-
         final Arena arena = GameAPI.get().getArenaByPlayer(player);
 
         if (arena == null)
@@ -175,5 +176,16 @@ public class HotbarManagerTools {
         }
 
         return false;
+    }
+
+    public static ShopPage getSwordCategory(){
+        for(ShopPage page : GameAPI.get().getShopPages()){
+            for(ShopItem item : page.getItems()){
+                if(item.getIcon().getType().name().contains("SWORD"))
+                    return page;
+            }
+        }
+
+        return null;
     }
 }

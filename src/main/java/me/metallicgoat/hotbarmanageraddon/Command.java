@@ -9,7 +9,6 @@ import org.bukkit.plugin.Plugin;
 import java.util.List;
 
 public class Command implements CommandHandler {
-
     private SubCommand cmd;
 
     @Override
@@ -28,7 +27,6 @@ public class Command implements CommandHandler {
             return;
 
         new HotBarManagementSession((Player) commandSender, false);
-
     }
 
     @Override

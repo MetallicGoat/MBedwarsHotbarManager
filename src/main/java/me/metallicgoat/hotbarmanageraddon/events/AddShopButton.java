@@ -15,15 +15,15 @@ import org.bukkit.event.Listener;
 
 public class AddShopButton implements Listener {
 
-    // TODO improve this a lot
-
     @EventHandler
     public void onShopPostProcess(ShopGUIPostProcessEvent event){
-
         if(event.getLayout().getType() != ShopLayoutType.HYPIXEL_V2)
             return;
 
         final ChestGUI gui = (ChestGUI) event.getGUI();
+
+        if(gui == null)
+            return;
 
         gui.setItem(new GUIItem(Util.buildItemStack(
                 ConfigValue.open_gui_from_shop_material,

@@ -11,29 +11,26 @@ public class ArmorSet {
     private ItemStack chestplate;
     private ItemStack helmet;
 
-
     public void setArmor(ItemStack itemStack){
-
         if(itemStack.getType().name().contains("BOOTS")){
             if(boots == null || isArmorBetter(itemStack, boots))
                 boots = itemStack;
         }
 
-        if(itemStack.getType().name().contains("LEGGINGS")){
+        else if(itemStack.getType().name().contains("LEGGINGS")){
             if(leggings == null || isArmorBetter(itemStack, leggings))
                 leggings = itemStack;
         }
 
-        if(itemStack.getType().name().contains("CHESTPLATE")){
+        else if(itemStack.getType().name().contains("CHESTPLATE")){
             if(chestplate == null || isArmorBetter(itemStack, chestplate))
                 chestplate = itemStack;
         }
 
-        if(itemStack.getType().name().contains("HELMET")){
+        else if(itemStack.getType().name().contains("HELMET")){
             if(helmet == null || isArmorBetter(itemStack, helmet))
                 helmet = itemStack;
         }
-
     }
 
     public void wearArmor(Player player){

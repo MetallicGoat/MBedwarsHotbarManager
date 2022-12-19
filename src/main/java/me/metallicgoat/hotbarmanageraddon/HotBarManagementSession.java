@@ -25,7 +25,6 @@ public class HotBarManagementSession {
     private HashMap<Integer, String> categorySlotMap = new HashMap<>();
 
     public HotBarManagementSession(Player player, boolean inShop){
-
         this.player = player;
         this.inShop = inShop;
 
@@ -38,7 +37,6 @@ public class HotBarManagementSession {
     }
 
     private GUI buildHotBarManagerGUI(){
-
         final ChestGUI gui = new ChestGUI(6, Message.build(ConfigValue.gui_title).done());
 
         addTopButtons(gui);
@@ -49,12 +47,10 @@ public class HotBarManagementSession {
         int i = 0;
 
         for(ShopPage page : pages){
-
             if(ConfigValue.excluded_categories.contains(page))
                 continue;
 
             final String catName = ChatColor.stripColor(page.getDisplayName());
-
             final ItemStack guiIcon = Util.buildItemStack(
                     page.getIcon().getType(),
                     Message.build(ConfigValue.categories_gui_title).placeholder("category-name", catName).placeholder("selected-slot", String.valueOf(selectedSlot + 1)).done(),
@@ -62,7 +58,6 @@ public class HotBarManagementSession {
 
             gui.setItem(new GUIItem(guiIcon, categoryClickListener(page.getName())), i, 2);
             i++;
-
         }
 
         gui.formatRow( 2, CenterFormat.CENTRALIZED);
@@ -80,7 +75,6 @@ public class HotBarManagementSession {
                 continue;
 
             final String catName = ChatColor.stripColor(page.getDisplayName());
-
             final ItemStack guiIcon = Util.buildItemStack(
                     page.getIcon().getType(),
                     Message.build(ConfigValue.hotbar_gui_items_title).placeholder("category-name", catName).placeholder("selected-slot", String.valueOf(selectedSlot + 1)).done(),
@@ -91,7 +85,6 @@ public class HotBarManagementSession {
 
         i = 0;
         while(i < 9){
-
             if(gui.getItem(i, 4) == null)
                 gui.setItem(new GUIItem(new ItemStack(Material.AIR), hotBarClickListener(i)), i, 4);
 
@@ -112,7 +105,6 @@ public class HotBarManagementSession {
     }
 
     private void addTopButtons(ChestGUI gui){
-
         final ItemStack closeItem = Util.buildItemStack(
                 ConfigValue.close_button_icon,
                 ConfigValue.close_button_title,
@@ -122,7 +114,6 @@ public class HotBarManagementSession {
         gui.setItem(new GUIItem(closeItem, new ClickListener() {
             @Override
             public void onClick(Player player, boolean b, boolean b1) {
-
                 if(inShop) {
                     GameAPI.get().openShop(player);
                     return;
@@ -141,15 +132,12 @@ public class HotBarManagementSession {
         gui.setItem(new GUIItem(resetItem, new ClickListener() {
             @Override
             public void onClick(Player player, boolean b, boolean b1) {
-
                 final HashMap<Integer, String> newCategorySlotMap = new HashMap<>();
 
                 for(Map.Entry<Integer, ShopPage> entry : ConfigValue.hotbar_defaults.entrySet())
                     newCategorySlotMap.put(entry.getKey(), entry.getValue().getName());
 
                 categorySlotMap = newCategorySlotMap;
-
-                saveHotBarData();
                 openGUI();
             }
         }), 5, 0);
@@ -158,7 +146,6 @@ public class HotBarManagementSession {
     }
 
     private void drawDivider(ClickableGUI gui, Integer selectedSlotX, int y){
-
         int i = 0;
         while(i < 9){
 
@@ -174,7 +161,6 @@ public class HotBarManagementSession {
     }
 
     private ShopPage getPageByName(String shopPage){
-
         for(ShopPage page : GameAPI.get().getShopPages()){
             if(shopPage.equals(page.getName()))
                 return page;
@@ -184,7 +170,6 @@ public class HotBarManagementSession {
     }
 
     private ClickListener categoryClickListener(String pageName){
-
         return new ClickListener() {
             @Override
             public void onClick(Player player, boolean leftClick, boolean shiftClick) {
@@ -199,7 +184,6 @@ public class HotBarManagementSession {
     }
 
     private ClickListener hotBarClickListener(int slot){
-
         return new ClickListener() {
             @Override
             public void onClick(Player player, boolean leftClick, boolean shiftClick) {
@@ -219,7 +203,6 @@ public class HotBarManagementSession {
     }
 
     private boolean hasBeenModified(int selectedSlot, String pageName){
-
         for(Map.Entry<Integer, String> entry : categorySlotMap.entrySet()){
             if(entry.getKey() == selectedSlot && entry.getValue().equals(pageName)){
                 return false;
@@ -230,7 +213,6 @@ public class HotBarManagementSession {
     }
 
     private void loadHotBarData(){
-
         PlayerDataAPI.get().getProperties(player.getUniqueId(), playerProperties -> {
             final Optional<String> json = playerProperties.get("hotbar_manager");
 
@@ -245,9 +227,8 @@ public class HotBarManagementSession {
     }
 
     private void saveHotBarData(){
-
         final Gson gson = new Gson();
-        String json = gson.toJson(categorySlotMap);
+        final String json = gson.toJson(categorySlotMap);
 
         PlayerDataAPI.get().getProperties(player.getUniqueId(), playerProperties -> playerProperties.set("hotbar_manager", json));
     }

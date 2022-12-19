@@ -56,9 +56,6 @@ public class Util {
     public static boolean isArmor(Material material){
         String name = material.name();
 
-        if(name.contains("LEGGINGS") || name.contains("BOOTS") || name.contains("CHESTPLATE") || name.contains("HELMET"))
-            return true;
-
-        return false;
+        return name.contains("LEGGINGS") || name.contains("BOOTS") || name.contains("CHESTPLATE") || name.contains("HELMET");
     }
 }

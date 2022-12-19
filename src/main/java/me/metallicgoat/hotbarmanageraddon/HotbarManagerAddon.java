@@ -28,7 +28,6 @@ public class HotbarManagerAddon extends BedwarsAddon {
     }
 
     public static void registerEvents(){
-
         final HotbarManagerPlugin plugin = HotbarManagerPlugin.getInstance();
         final PluginManager manager = plugin.getServer().getPluginManager();
 
@@ -38,7 +37,6 @@ public class HotbarManagerAddon extends BedwarsAddon {
         manager.registerEvents(new ManageSpawn(), plugin);
         manager.registerEvents(new ManageBuy(), plugin);
         manager.registerEvents(new AddShopButton(), plugin);
-
     }
 
     void registerCommands(){
@@ -53,7 +51,6 @@ public class HotbarManagerAddon extends BedwarsAddon {
         cmd.setAliases("hbm", "hotbar", "edithotbar");
 
         this.command = cmd;
-
     }
 
     void unregisterCommands(){

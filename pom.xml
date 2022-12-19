@@ -6,7 +6,7 @@
 
     <groupId>me.metallicgoat</groupId>
     <artifactId>HotbarManager</artifactId>
-    <version>1.0.0-Dev-B</version>
+    <version>1.0.1</version>
 
     <repositories>
         <repository>

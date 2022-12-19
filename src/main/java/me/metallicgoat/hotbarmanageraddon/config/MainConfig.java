@@ -18,8 +18,8 @@ import java.util.Map;
 
 public class MainConfig {
 
-    public static final byte VERSION = 0;
-    public static int CURRENT_VERSION = -1;
+    public static final String ADDON_VERSION = HotbarManagerPlugin.getInstance().getDescription().getVersion();
+    public static String CURRENT_CONFIG_VERSION = null;
 
     private static File getFile() {
         return new File(HotbarManagerPlugin.getAddon().getDataFolder(), "config.yml");
@@ -53,8 +53,6 @@ public class MainConfig {
         }
 
         // read it
-        // TODO improve this messy ass reading
-
         ConfigValue.close_button_icon = parseItemStack(config, "Close-Button.Icon", "ARROW");
         ConfigValue.close_button_title = config.getString("Close-Button.Title", ConfigValue.close_button_title);
         if(config.contains("Close-Button.Lore"))
@@ -139,11 +137,14 @@ public class MainConfig {
             ConfigValue.open_gui_from_shop_lore = config.getStringList("Shop-Button.Lore");
 
         // auto update file if newer version
-        // TODO CURRENT_VERSION = config.getInt("file-version", -1);
+        {
+            CURRENT_CONFIG_VERSION = config.getString("file-version");
 
-        if (CURRENT_VERSION != VERSION)
-            save();
-
+            if(CURRENT_CONFIG_VERSION == null || !CURRENT_CONFIG_VERSION.equals(ADDON_VERSION)) {
+                loadOldConfigs(config);
+                save();
+            }
+        }
 
     }
 
@@ -152,7 +153,7 @@ public class MainConfig {
         final YamlConfigurationDescriptor config = new YamlConfigurationDescriptor();
 
         config.addComment("Used for auto-updating the config file. Ignore it");
-        config.set("file-version", VERSION);
+        config.set("file-version", ADDON_VERSION);
 
         config.addEmptyLine();
 
@@ -225,8 +226,11 @@ public class MainConfig {
         config.set("Shop-Button.Title", ConfigValue.open_gui_from_shop_title);
         config.set("Shop-Button.Lore", ConfigValue.open_gui_from_shop_lore);
 
-
         config.save(getFile());
+    }
+
+    public static void loadOldConfigs(FileConfiguration config) {
+        // Nothing here yet :)
     }
 
     private static ItemStack parseItemStack(FileConfiguration config, String path, String def){
@@ -236,5 +240,4 @@ public class MainConfig {
 
         return is != null ? is : new ItemStack(Material.STONE);
     }
-
 }
