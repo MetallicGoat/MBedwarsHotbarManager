@@ -1,6 +1,7 @@
 package me.metallicgoat.hotbarmanageraddon.events;
 
 import de.marcely.bedwars.api.arena.Arena;
+import de.marcely.bedwars.api.arena.Team;
 import de.marcely.bedwars.api.event.player.PlayerBuyInShopEvent;
 import de.marcely.bedwars.api.game.shop.ShopItem;
 import de.marcely.bedwars.api.game.shop.ShopPage;
@@ -40,9 +41,10 @@ public class ManageBuy implements Listener {
 
     private Collection<ItemStack> getGivingItems(ShopItem item, Player player, Arena arena) {
         final Collection<ItemStack> itemsGiven = new ArrayList<>();
+        final Team team = arena != null ? arena.getPlayerTeam(player) : null;
 
         for (ShopProduct product : item.getProducts()) {
-            final Collection<ItemStack> items = Arrays.asList(product.getGivingItems(player, arena.getPlayerTeam(player), arena, 1));
+            final Collection<ItemStack> items = Arrays.asList(product.getGivingItems(player, team, arena, 1));
             itemsGiven.addAll(items);
         }
 

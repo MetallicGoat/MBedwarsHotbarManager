@@ -16,6 +16,4 @@ Simply download the latest release, add it to
 your MBedwars addons folder, and restart! No
 setup is required other than that. The config
 file will be generated in the addons folder
-as well. 
-
-## NOTE: Requires MBedwars v5.0.13
+as well.
