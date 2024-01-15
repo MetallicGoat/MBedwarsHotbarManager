@@ -17,42 +17,44 @@ import java.util.HashMap;
 
 public class LoadConfigs implements Listener {
 
-    @EventHandler
-    public void onConfigLoad(ConfigsLoadEvent event) {
-        if(!event.isStartup())
-            loadConfigs();
+  public static void loadConfigs() {
+    final long start = System.currentTimeMillis();
+
+    // Load some defaults that need to be refreshed on mbedwars reload
+    // Tries to guess what the sword and armor categories are (Assumes hypixel-like store structure... Kinda)
+    {
+      final ShopPage armorCategory = getArmorCategory();
+      ConfigValue.excluded_categories = armorCategory != null ? Collections.singletonList(armorCategory) : new ArrayList<>();
+
+      final ShopPage swordCategory = HotbarManagerTools.getSwordCategory();
+      ConfigValue.hotbar_defaults = swordCategory != null ? new HashMap<Integer, ShopPage>() {{
+        put(0, swordCategory);
+      }} : new HashMap<>();
+
     }
 
-    public static void loadConfigs() {
-        final long start = System.currentTimeMillis();
+    MainConfig.load();
 
-        // Load some defaults that need to be refreshed on mbedwars reload
-        // Tries to guess what the sword and armor categories are (Assumes hypixel-like store structure... Kinda)
-        {
-            final ShopPage armorCategory = getArmorCategory();
-            ConfigValue.excluded_categories = armorCategory != null ? Collections.singletonList(armorCategory) : new ArrayList<>();
+    final long end = System.currentTimeMillis();
+    Console.printInfo("Configs loaded in " + (end - start) + "ms.");
+  }
 
-            final ShopPage swordCategory = HotbarManagerTools.getSwordCategory();
-            ConfigValue.hotbar_defaults = swordCategory != null ? new HashMap<Integer, ShopPage>() {{ put(0, swordCategory); }} : new HashMap<>();
+  public static ShopPage getArmorCategory() {
+    for (ShopPage page : GameAPI.get().getShopPages()) {
+      for (ShopItem item : page.getItems()) {
+        final Material material = item.getIcon().getType();
 
-        }
-
-        MainConfig.load();
-
-        final long end = System.currentTimeMillis();
-        Console.printInfo("Configs loaded in " + (end - start) + "ms.");
+        if (Util.isArmor(material))
+          return page;
+      }
     }
 
-    public static ShopPage getArmorCategory(){
-        for(ShopPage page : GameAPI.get().getShopPages()){
-            for(ShopItem item : page.getItems()){
-                final Material material = item.getIcon().getType();
+    return null;
+  }
 
-                if(Util.isArmor(material))
-                    return page;
-            }
-        }
-
-        return null;
-    }
+  @EventHandler
+  public void onConfigLoad(ConfigsLoadEvent event) {
+    if (!event.isStartup())
+      loadConfigs();
+  }
 }

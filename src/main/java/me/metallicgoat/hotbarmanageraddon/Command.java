@@ -9,28 +9,28 @@ import org.bukkit.plugin.Plugin;
 import java.util.List;
 
 public class Command implements CommandHandler {
-    private SubCommand cmd;
+  private SubCommand cmd;
 
-    @Override
-    public Plugin getPlugin() {
-        return HotbarManagerPlugin.getInstance();
-    }
+  @Override
+  public Plugin getPlugin() {
+    return HotbarManagerPlugin.getInstance();
+  }
 
-    @Override
-    public void onRegister(SubCommand subCommand) {
-        this.cmd = subCommand;
-    }
+  @Override
+  public void onRegister(SubCommand subCommand) {
+    this.cmd = subCommand;
+  }
 
-    @Override
-    public void onFire(CommandSender commandSender, String s, String[] strings) {
-        if(!(commandSender instanceof Player))
-            return;
+  @Override
+  public void onFire(CommandSender commandSender, String s, String[] strings) {
+    if (!(commandSender instanceof Player))
+      return;
 
-        new HotBarManagementSession((Player) commandSender, false);
-    }
+    new HotBarManagementSession((Player) commandSender, false);
+  }
 
-    @Override
-    public List<String> onAutocomplete(CommandSender commandSender, String[] strings) {
-        return null;
-    }
+  @Override
+  public List<String> onAutocomplete(CommandSender commandSender, String[] strings) {
+    return null;
+  }
 }

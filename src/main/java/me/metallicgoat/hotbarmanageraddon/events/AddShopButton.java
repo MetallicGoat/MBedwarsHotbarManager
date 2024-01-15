@@ -15,26 +15,26 @@ import org.bukkit.event.Listener;
 
 public class AddShopButton implements Listener {
 
-    @EventHandler
-    public void onShopPostProcess(ShopGUIPostProcessEvent event){
-        if(event.getLayout().getType() != ShopLayoutType.HYPIXEL_V2)
-            return;
+  @EventHandler
+  public void onShopPostProcess(ShopGUIPostProcessEvent event) {
+    if (event.getLayout().getType() != ShopLayoutType.HYPIXEL_V2)
+      return;
 
-        final ChestGUI gui = (ChestGUI) event.getGUI();
+    final ChestGUI gui = (ChestGUI) event.getGUI();
 
-        if(gui == null)
-            return;
+    if (gui == null)
+      return;
 
-        gui.setItem(new GUIItem(Util.buildItemStack(
-                ConfigValue.open_gui_from_shop_material,
-                Message.build(ConfigValue.open_gui_from_shop_title).done(),
-                ConfigValue.open_gui_from_shop_lore,
-                null, 1), new ClickListener() {
+    gui.setItem(new GUIItem(Util.buildItemStack(
+        ConfigValue.open_gui_from_shop_material,
+        Message.build(ConfigValue.open_gui_from_shop_title).done(),
+        ConfigValue.open_gui_from_shop_lore,
+        null, 1), new ClickListener() {
 
-            @Override
-            public void onClick(Player player, boolean b, boolean b1) {
-                new HotBarManagementSession(player, true);
-            }
-        }), 53);
-    }
+      @Override
+      public void onClick(Player player, boolean b, boolean b1) {
+        new HotBarManagementSession(player, true);
+      }
+    }), 53);
+  }
 }

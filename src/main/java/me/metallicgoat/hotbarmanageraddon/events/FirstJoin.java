@@ -13,21 +13,21 @@ import java.util.Map;
 
 public class FirstJoin implements Listener {
 
-    // Dont do on gui open event because they may go into a game first
-    @EventHandler
-    public void onPlayerJoin(PlayerJoinEvent event){
-        PlayerDataAPI.get().getProperties(event.getPlayer().getUniqueId(), playerProperties -> {
+  // Dont do on gui open event because they may go into a game first
+  @EventHandler
+  public void onPlayerJoin(PlayerJoinEvent event) {
+    PlayerDataAPI.get().getProperties(event.getPlayer().getUniqueId(), playerProperties -> {
 
-            if(playerProperties.get("hotbar_manager").isPresent())
-                return;
+      if (playerProperties.get("hotbar_manager").isPresent())
+        return;
 
-            final HashMap<Integer, String> categorySlotMap = new HashMap<>();
+      final HashMap<Integer, String> categorySlotMap = new HashMap<>();
 
-            for(Map.Entry<Integer, ShopPage> entry : ConfigValue.hotbar_defaults.entrySet())
-                categorySlotMap.put(entry.getKey(), entry.getValue().getName());
+      for (Map.Entry<Integer, ShopPage> entry : ConfigValue.hotbar_defaults.entrySet())
+        categorySlotMap.put(entry.getKey(), entry.getValue().getName());
 
-            playerProperties.set("hotbar_manager", new Gson().toJson(categorySlotMap));
+      playerProperties.set("hotbar_manager", new Gson().toJson(categorySlotMap));
 
-        });
-    }
+    });
+  }
 }

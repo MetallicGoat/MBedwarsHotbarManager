@@ -1,6 +1,5 @@
 package me.metallicgoat.hotbarmanageraddon.events;
 
-import de.marcely.bedwars.api.GameAPI;
 import de.marcely.bedwars.api.arena.Arena;
 import de.marcely.bedwars.api.arena.Team;
 import de.marcely.bedwars.api.event.arena.RoundStartEvent;
@@ -19,59 +18,59 @@ import java.util.Collection;
 
 public class ManageSpawn implements Listener {
 
-    @EventHandler
-    public void onRoundStart(RoundStartEvent event){
-        event.setGivingItems(false);
+  private static void manageSpawn(Arena arena, Team team, Player player, boolean firstSpawn) {
+    final Collection<ItemStack> itemsGiving = arena.getItemsGivenOnSpawn(player, team, firstSpawn, true);
+    final ArmorSet armorSet = new ArmorSet();
 
-        final Arena arena = event.getArena();
+    for (ItemStack itemStack : itemsGiving) {
 
-        for(Player player : arena.getPlayers())
-            manageSpawn(arena, arena.getPlayerTeam(player), player, true);
+      ShopPage page = HotbarManagerTools.getItemPage(itemStack, player, arena, team);
+
+      // for give-items-on configs
+      if (page == null)
+        page = getRelatedShopPage(itemStack);
+
+      if (Util.isArmor(itemStack.getType())) {
+        armorSet.setArmor(itemStack);
+        continue;
+      }
+
+      if (page == null) {
+        Helper.get().givePlayerItem(player, itemStack);
+        continue;
+      }
+
+      HotbarManagerTools.giveItemsProperly(itemStack, player, page, null, true);
     }
 
-    @EventHandler
-    public void onRespawn(PlayerIngameRespawnEvent event){
-        event.setGivingItems(false);
+    armorSet.wearArmor(player);
+  }
 
-        final Arena arena = event.getArena();
-        final Player player = event.getPlayer();
+  // for give-items-on configs
+  private static ShopPage getRelatedShopPage(ItemStack itemStack) {
+    if (itemStack.getType().name().contains("SWORD"))
+      return HotbarManagerTools.getSwordCategory();
 
-        manageSpawn(arena, arena.getPlayerTeam(player), player, false);
-    }
+    return null;
+  }
 
-    private static void manageSpawn(Arena arena, Team team, Player player, boolean firstSpawn){
-        final Collection<ItemStack> itemsGiving = arena.getItemsGivenOnSpawn(player, team, firstSpawn, true);
-        final ArmorSet armorSet = new ArmorSet();
+  @EventHandler
+  public void onRoundStart(RoundStartEvent event) {
+    event.setGivingItems(false);
 
-        for(ItemStack itemStack : itemsGiving) {
+    final Arena arena = event.getArena();
 
-            ShopPage page = HotbarManagerTools.getItemPage(itemStack, player, arena, team);
+    for (Player player : arena.getPlayers())
+      manageSpawn(arena, arena.getPlayerTeam(player), player, true);
+  }
 
-            // for give-items-on configs
-            if(page == null)
-                page = getRelatedShopPage(itemStack);
+  @EventHandler
+  public void onRespawn(PlayerIngameRespawnEvent event) {
+    event.setGivingItems(false);
 
-            if(Util.isArmor(itemStack.getType())) {
-                armorSet.setArmor(itemStack);
-                continue;
-            }
+    final Arena arena = event.getArena();
+    final Player player = event.getPlayer();
 
-            if(page == null) {
-                Helper.get().givePlayerItem(player, itemStack);
-                continue;
-            }
-
-            HotbarManagerTools.giveItemsProperly(itemStack, player, page, null, true);
-        }
-
-        armorSet.wearArmor(player);
-    }
-
-    // for give-items-on configs
-    private static ShopPage getRelatedShopPage(ItemStack itemStack) {
-        if(itemStack.getType().name().contains("SWORD"))
-            return HotbarManagerTools.getSwordCategory();
-
-        return null;
-    }
+    manageSpawn(arena, arena.getPlayerTeam(player), player, false);
+  }
 }

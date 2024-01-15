@@ -13,49 +13,49 @@ import java.util.List;
 
 public class Util {
 
-    public static ItemStack buildItemStack(Material material, String displayName, List<String> lore, List<Pair<String, String>> placeholders, int amount) {
-        return buildItemStack(new ItemStack(material), displayName, lore, placeholders, amount);
-    }
+  public static ItemStack buildItemStack(Material material, String displayName, List<String> lore, List<Pair<String, String>> placeholders, int amount) {
+    return buildItemStack(new ItemStack(material), displayName, lore, placeholders, amount);
+  }
 
-    public static ItemStack buildItemStack(ItemStack item, String displayName, List<String> lore, List<Pair<String, String>> placeholders, int amount){
+  public static ItemStack buildItemStack(ItemStack item, String displayName, List<String> lore, List<Pair<String, String>> placeholders, int amount) {
 
-        final ItemStack itemStack = NMSHelper.get().hideAttributes(item);
-        ItemMeta meta = itemStack.getItemMeta();
+    final ItemStack itemStack = NMSHelper.get().hideAttributes(item);
+    ItemMeta meta = itemStack.getItemMeta();
 
-        if(meta == null)
-            meta = Bukkit.getItemFactory().getItemMeta(item.getType());
+    if (meta == null)
+      meta = Bukkit.getItemFactory().getItemMeta(item.getType());
 
-        meta.setDisplayName(Message.build(displayName).done());
+    meta.setDisplayName(Message.build(displayName).done());
 
-        if(lore != null){
+    if (lore != null) {
 
-            final List<String> formattedLore =new ArrayList<>();
+      final List<String> formattedLore = new ArrayList<>();
 
-            for(String s : lore) {
+      for (String s : lore) {
 
-                final Message message = Message.build(s);
+        final Message message = Message.build(s);
 
-                if(placeholders != null) {
-                    for (Pair<String, String> placeholder : placeholders)
-                        message.placeholder(placeholder.getKey(), placeholder.getValue());
-                }
-
-                formattedLore.add(message.done());
-            }
-
-            meta.setLore(formattedLore);
+        if (placeholders != null) {
+          for (Pair<String, String> placeholder : placeholders)
+            message.placeholder(placeholder.getKey(), placeholder.getValue());
         }
 
-        itemStack.setItemMeta(meta);
-        itemStack.setAmount(amount);
+        formattedLore.add(message.done());
+      }
 
-        return itemStack;
-
+      meta.setLore(formattedLore);
     }
 
-    public static boolean isArmor(Material material){
-        String name = material.name();
+    itemStack.setItemMeta(meta);
+    itemStack.setAmount(amount);
 
-        return name.contains("LEGGINGS") || name.contains("BOOTS") || name.contains("CHESTPLATE") || name.contains("HELMET");
-    }
+    return itemStack;
+
+  }
+
+  public static boolean isArmor(Material material) {
+    String name = material.name();
+
+    return name.contains("LEGGINGS") || name.contains("BOOTS") || name.contains("CHESTPLATE") || name.contains("HELMET");
+  }
 }
