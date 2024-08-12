@@ -23,7 +23,6 @@ public class ManageSpawn implements Listener {
     final ArmorSet armorSet = new ArmorSet();
 
     for (ItemStack itemStack : itemsGiving) {
-
       ShopPage page = HotbarManagerTools.getItemPage(itemStack, player, arena, team);
 
       // for give-items-on configs

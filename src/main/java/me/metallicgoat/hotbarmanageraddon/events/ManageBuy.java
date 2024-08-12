@@ -6,6 +6,8 @@ import de.marcely.bedwars.api.event.player.PlayerBuyInShopEvent;
 import de.marcely.bedwars.api.game.shop.ShopItem;
 import de.marcely.bedwars.api.game.shop.ShopPage;
 import de.marcely.bedwars.api.game.shop.product.ShopProduct;
+import de.marcely.bedwars.api.game.shop.product.ShopProductType;
+import de.marcely.bedwars.impl.api.game.shop.product.ImplShopProduct;
 import me.metallicgoat.hotbarmanageraddon.HotbarManagerTools;
 import me.metallicgoat.hotbarmanageraddon.Util;
 import me.metallicgoat.hotbarmanageraddon.config.ConfigValue;
@@ -20,7 +22,8 @@ import java.util.Arrays;
 import java.util.Collection;
 
 public class ManageBuy implements Listener {
-  @EventHandler(priority = EventPriority.HIGHEST)
+
+  @EventHandler(priority = EventPriority.HIGHEST) // NOTE: This might be better as MONITOR
   public void onShopBuy(PlayerBuyInShopEvent event) {
     if (!event.getProblems().isEmpty())
       return;
@@ -31,23 +34,28 @@ public class ManageBuy implements Listener {
     if (ConfigValue.excluded_categories.contains(page))
       return;
 
-    final Collection<ItemStack> givenItems = getGivingItems(event.getItem(), player, event.getArena());
+    final Arena arena = event.getArena();
+    final ShopItem item = event.getItem();
 
-    for (ItemStack givenItem : givenItems) {
-      if (!Util.isArmor(givenItem.getType()))
-        HotbarManagerTools.giveItemsProperly(givenItem, player, page, event, false);
+    // Implement giving products ourselves:
+    if (event.isGivingProducts()) {
+      final Team team = arena != null ? arena.getPlayerTeam(player) : null;
+      final int multiplier = event.getMultiplier();
+
+      for (ShopProduct product : item.getProducts()) {
+        // Give using API
+        if (product.getType() != ShopProductType.ITEM) {
+          product.give(player, team, arena, multiplier);
+          continue;
+        }
+
+        // Our own implementation for items
+        for (ItemStack givenItem : product.getGivingItems(player, team, arena, multiplier)) {
+          if (!Util.isArmor(givenItem.getType())) {
+            HotbarManagerTools.giveItemsProperly(givenItem, player, page, false);
+          }
+        }
+      }
     }
-  }
-
-  private Collection<ItemStack> getGivingItems(ShopItem item, Player player, Arena arena) {
-    final Collection<ItemStack> itemsGiven = new ArrayList<>();
-    final Team team = arena != null ? arena.getPlayerTeam(player) : null;
-
-    for (ShopProduct product : item.getProducts()) {
-      final Collection<ItemStack> items = Arrays.asList(product.getGivingItems(player, team, arena, 1));
-      itemsGiven.addAll(items);
-    }
-
-    return itemsGiven;
   }
 }

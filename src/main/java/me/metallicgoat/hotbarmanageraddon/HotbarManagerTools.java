@@ -22,19 +22,21 @@ import java.util.Optional;
 
 public class HotbarManagerTools {
 
+  // Used by Tweaks
+  @Deprecated
+  public static boolean giveItemsProperly(ItemStack givenItem, Player player, ShopPage page, PlayerBuyInShopEvent event, boolean force) {
+    return giveItemsProperly(givenItem, player, page, force);
+  }
+
   /*
    * 1. Try to put item in slot with similar itemstack
    * 2. Try to put item in null slot for that category
    * 3. Try and force move an item
    * 4. Give up. Add Item to inventory normally.
    */
-  public static boolean giveItemsProperly(ItemStack givenItem, Player player, ShopPage page, PlayerBuyInShopEvent event, boolean force) {
+  public static boolean giveItemsProperly(ItemStack givenItem, Player player, ShopPage page, boolean force) {
     if (page == null)
       return false;
-
-    // We will handle giving the items
-    if (event != null)
-      event.setGivingProducts(false);
 
     final Integer slot = getPreferredSlot(givenItem.clone(), page, player, force);
     final Inventory inventory = player.getInventory();
@@ -52,7 +54,6 @@ public class HotbarManagerTools {
 
     else {
       if (currItemInSlot.isSimilar(givenItem)) {
-
         final int total = currItemInSlot.getAmount() + givenItem.getAmount();
         final int maxStack = currItemInSlot.getMaxStackSize();
 
@@ -65,7 +66,7 @@ public class HotbarManagerTools {
           final ItemStack leftOver = givenItem.clone();
           leftOver.setAmount(total - maxStack);
 
-          giveItemsProperly(leftOver, player, page, null, false);
+          giveItemsProperly(leftOver, player, page, false);
         }
 
         // Yay! We don't need to find more space! Everything fits
@@ -86,7 +87,6 @@ public class HotbarManagerTools {
 
   // Wrote this at 12 AM after an 8 hour workday on a weekend. Give me a break plz
   public static ShopPage getItemPage(ItemStack givenStack, Player player, Arena arena, Team team) {
-
     for (ShopPage page : GameAPI.get().getShopPages()) {
       for (ShopItem item : page.getItems()) {
         for (ShopProduct product : item.getProducts()) {
