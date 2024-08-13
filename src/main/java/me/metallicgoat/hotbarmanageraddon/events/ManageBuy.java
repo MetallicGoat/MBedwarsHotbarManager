@@ -39,6 +39,8 @@ public class ManageBuy implements Listener {
 
     // Implement giving products ourselves:
     if (event.isGivingProducts()) {
+      event.setGivingProducts(false);
+
       final Team team = arena != null ? arena.getPlayerTeam(player) : null;
       final int multiplier = event.getMultiplier();
 
