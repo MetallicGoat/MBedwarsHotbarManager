@@ -9,8 +9,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class HotbarManagerPlugin extends JavaPlugin {
 
-  public static final int MIN_MBEDWARS_API_VER = 100;
-  public static final String MIN_MBEDWARS_VER_NAME = "5.4";
+  public static final int MIN_MBEDWARS_API_VER = 109;
+  public static final String MIN_MBEDWARS_VER_NAME = "5.4.10";
 
   @Getter
   static private HotbarManagerPlugin instance;
@@ -44,8 +44,9 @@ public class HotbarManagerPlugin extends JavaPlugin {
   }
 
   public void onDisable() {
-    if (addon != null)
+    if (addon != null) {
       addon.unregisterCommands();
+    }
   }
 
   private boolean checkMBedwars() {
