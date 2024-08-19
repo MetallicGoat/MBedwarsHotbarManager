@@ -5,6 +5,7 @@ import de.marcely.bedwars.api.arena.Team;
 import de.marcely.bedwars.api.event.player.PlayerBuyInShopEvent;
 import de.marcely.bedwars.api.game.shop.ShopItem;
 import de.marcely.bedwars.api.game.shop.ShopPage;
+import de.marcely.bedwars.api.game.shop.product.ItemShopProduct;
 import de.marcely.bedwars.api.game.shop.product.ShopProduct;
 import de.marcely.bedwars.api.game.shop.product.ShopProductType;
 import de.marcely.bedwars.impl.api.game.shop.product.ImplShopProduct;
@@ -46,7 +47,7 @@ public class ManageBuy implements Listener {
 
       for (ShopProduct product : item.getProducts()) {
         // Give using API
-        if (product.getType() != ShopProductType.ITEM) {
+        if (!(product instanceof ItemShopProduct)) {
           product.give(player, team, arena, multiplier);
           continue;
         }
