@@ -7,8 +7,6 @@ import de.marcely.bedwars.api.game.shop.ShopItem;
 import de.marcely.bedwars.api.game.shop.ShopPage;
 import de.marcely.bedwars.api.game.shop.product.ItemShopProduct;
 import de.marcely.bedwars.api.game.shop.product.ShopProduct;
-import de.marcely.bedwars.api.game.shop.product.ShopProductType;
-import de.marcely.bedwars.impl.api.game.shop.product.ImplShopProduct;
 import me.metallicgoat.hotbarmanageraddon.HotbarManagerTools;
 import me.metallicgoat.hotbarmanageraddon.Util;
 import me.metallicgoat.hotbarmanageraddon.config.ConfigValue;
@@ -17,10 +15,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 
 public class ManageBuy implements Listener {
 
