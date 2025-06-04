@@ -9,8 +9,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class HotbarManagerPlugin extends JavaPlugin {
 
-  public static final int MIN_MBEDWARS_API_VER = 109;
-  public static final String MIN_MBEDWARS_VER_NAME = "5.4.10";
+  public static final int MIN_MBEDWARS_API_VER = 204;
+  public static final String MIN_MBEDWARS_VER_NAME = "5.5.4";
 
   @Getter
   static private HotbarManagerPlugin instance;
