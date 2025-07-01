@@ -39,7 +39,7 @@ public class ManageSpawn implements Listener {
         continue;
       }
 
-      HotbarManagerTools.giveItemsProperly(itemStack, player, page, null, true);
+      HotbarManagerTools.giveItemsProperly(itemStack, player, page, true);
     }
 
     armorSet.wearArmor(player);
