@@ -33,10 +33,6 @@ public class HotBarManagementSession {
   }
 
   private void openGUI() {
-    buildHotBarManagerGUI().open(player);
-  }
-
-  private GUI buildHotBarManagerGUI() {
     final ChestGUI gui = new ChestGUI(6, Message.build(ConfigValue.gui_title).done());
 
     addTopButtons(gui);
@@ -101,7 +97,7 @@ public class HotBarManagementSession {
     // Bottom Divider
     drawDivider(gui, selectedSlotX, 5);
 
-    return gui;
+    gui.open(player);
   }
 
   private void addTopButtons(ChestGUI gui) {

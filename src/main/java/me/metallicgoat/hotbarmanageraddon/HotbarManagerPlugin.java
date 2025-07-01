@@ -13,9 +13,9 @@ public class HotbarManagerPlugin extends JavaPlugin {
   public static final String MIN_MBEDWARS_VER_NAME = "5.5.4";
 
   @Getter
-  static private HotbarManagerPlugin instance;
+  private static HotbarManagerPlugin instance;
   @Getter
-  static private HotbarManagerAddon addon;
+  private static HotbarManagerAddon addon;
 
   public void onEnable() {
 
