@@ -3,6 +3,7 @@ package me.metallicgoat.hotbarmanageraddon.events;
 import de.marcely.bedwars.api.arena.Arena;
 import de.marcely.bedwars.api.arena.Team;
 import de.marcely.bedwars.api.event.arena.RoundStartEvent;
+import de.marcely.bedwars.api.event.player.PlayerIngamePostRespawnEvent;
 import de.marcely.bedwars.api.event.player.PlayerIngameRespawnEvent;
 import de.marcely.bedwars.api.game.shop.ShopPage;
 import de.marcely.bedwars.tools.Helper;
@@ -11,6 +12,7 @@ import me.metallicgoat.hotbarmanageraddon.HotbarManagerTools;
 import me.metallicgoat.hotbarmanageraddon.Util;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 
@@ -63,10 +65,13 @@ public class ManageSpawn implements Listener {
       manageSpawn(arena, arena.getPlayerTeam(player), player, true);
   }
 
-  @EventHandler
-  public void onRespawn(PlayerIngameRespawnEvent event) {
+  @EventHandler(priority = EventPriority.HIGH)
+  public void onPreRespawn(PlayerIngameRespawnEvent event) {
     event.setGivingItems(false);
+  }
 
+  @EventHandler
+  public void onPostRespawn(PlayerIngamePostRespawnEvent event) {
     final Arena arena = event.getArena();
     final Player player = event.getPlayer();
 
